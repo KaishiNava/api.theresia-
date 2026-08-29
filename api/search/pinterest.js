@@ -1,10 +1,9 @@
 export default async function handler(req, res) {
-  // 1. Set Header Anti-CORS
+  // Set Header Anti-CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  // Tangani Request Preflight Browser (OPTIONS)
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
@@ -15,50 +14,37 @@ export default async function handler(req, res) {
   }
 
   try {
-    // 2. Fetch Halaman Pencarian Pinterest
-    const searchUrl = `https://www.pinterest.com/search/pins/?q=${encodeURIComponent(q)}`;
-    const response = await fetch(searchUrl, {
+    const pinApiUrl = `https://www.pinterest.com/resource/BaseSearchResource/get/`;
+    const params = new URLSearchParams({
+      source_url: `/search/pins/?q=${encodeURIComponent(q)}`,
+      data: JSON.stringify({
+        options: {
+          query: q,
+          scope: "pins"
+        },
+        context: {}
+      })
+    });
+
+    const response = await fetch(`${pinApiUrl}?${params.toString()}`, {
       headers: {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.5"
+        "Accept": "application/json, text/javascript, */*, q=0.01",
+        "X-Requested-With": "XMLHttpRequest"
       }
     });
 
-    const html = await response.text();
+    const data = await response.json();
+    const rawResults = data?.resource_response?.data?.results || [];
 
-    // 3. Extract JSON Data dari Script Tag Pinterest
-    const jsonMatch = html.match(/<script id="__PWA_DATA__" type="application\/json">(.*?)<\/script>/s) ||
-                      html.match(/<script id="initial-data" type="application\/json">(.*?)<\/script>/s);
-
-    if (!jsonMatch) {
-      return res.status(500).json({
-        status: false,
-        message: "Gagal mengekstrak data dari Pinterest. Struktur halaman mungkin berubah."
-      });
-    }
-
-    const parsedData = JSON.parse(jsonMatch[1]);
-    
-    // Navigasi ke array hasil pencarian
-    const mainData = parsedData?.props?.initialReduxState?.search?.searchPage?.pins || 
-                     parsedData?.initialReduxState?.pins || {};
-    
-    const rawPins = Object.values(mainData);
-
-    // 4. Format & Filter Data (Hanya Mengambil Gambar Kualitas Terbaik)
-    const results = rawPins
-      .filter(pin => pin && pin.images)
-      .map(pin => {
-        // Ambil URL gambar resolusi paling tinggi (orig / 736x)
-        const directImageUrl = pin.images.orig?.url || 
-                               pin.images["736x"]?.url || 
-                               pin.images["474x"]?.url;
-
+    const results = rawResults
+      .filter(item => item && item.images)
+      .map(item => {
+        const imageUrl = item.images.orig?.url || item.images["736x"]?.url || item.images["474x"]?.url;
         return {
-          title: pin.grid_title || pin.title || pin.description || "Pinterest Media",
-          pin_url: `https://www.pinterest.com/pin/${pin.id}/`,
-          download_direct_url: directImageUrl
+          title: item.title || item.grid_title || item.description || "Pinterest Media",
+          pin_url: `https://www.pinterest.com/pin/${item.id}/`,
+          download_direct_url: imageUrl
         };
       })
       .filter(item => item.download_direct_url);
@@ -70,11 +56,10 @@ export default async function handler(req, res) {
       });
     }
 
-    // 5. Kirim Response
     return res.status(200).json({
       status: true,
       creator: "Theresia Api",
-      service: "Pinterest Search & Downloader",
+      service: "Pinterest Search Engine",
       query: q,
       total_results: results.length,
       results: results
