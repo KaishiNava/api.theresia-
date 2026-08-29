@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Theresia Api — K-Frame Multi-Tools</title>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --bg-black: #080808;
+      --surface-dark: rgba(18, 18, 20, 0.85);
+      --surface-card: rgba(255, 255, 255, 0.03);
+      --border-line: rgba(255, 255, 255, 0.12);
+      --border-focus: rgba(255, 255, 255, 0.5);
+      --text-main: #f4f4f5;
+      --text-muted: #8e8e93;
+      --white: #ffffff;
+      --radius-lg: 18px;
+      --radius-md: 10px;
+      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-black);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Grid Canvas Background Animation */
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .app-container {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.25rem;
+      background: var(--surface-dark);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-line);
+      border-radius: var(--radius-lg);
+      margin-bottom: 2rem;
+      position: relative;
+      z-index: 999;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-geo {
+      width: 14px;
+      height: 14px;
+      border: 1.5px solid var(--white);
+      transform: rotate(45deg);
+    }
+
+    .brand h1 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+
+    /* Desktop Navigation Menu */
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1rem;
+      border-radius: var(--radius-md);
+      transition: var(--transition);
+    }
+
+    .nav-btn:hover, .nav-btn.active {
+      color: var(--white);
+      background: rgba(255, 255, 255, 0.06);
+      border-color: var(--border-line);
+    }
+
+    .hamburger-btn {
+      display: none;
+      background: transparent;
+      border: none;
+      color: var(--white);
+      cursor: pointer;
+      padding: 0.4rem;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      text-align: center;
+      margin-bottom: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title {
+      font-size: 2.5rem;
+      font-weight: 900;
+      line-height: 1.15;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.75rem;
+    }
+
+    .text-stroke {
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255, 255, 255, 0.8);
+    }
+
+    .hero-subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    /* Tool Card */
+    .tool-card {
+      background: var(--surface-dark);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-line);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Sub Tabs Slider (Scrollable Mobile) */
+    .sub-tabs-wrapper {
+      border-bottom: 1px solid var(--border-line);
+      overflow-x: auto;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none;  /* IE 10+ */
+    }
+    .sub-tabs-wrapper::-webkit-scrollbar {
+      display: none; /* Chrome/Safari */
+    }
+
+    .sub-tabs {
+      display: flex;
+      gap: 0.5rem;
+      padding: 1rem 1.25rem 0;
+      min-width: max-content;
+    }
+
+    .sub-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.65rem 1.1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      border-bottom: 2px solid transparent;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .sub-tab-btn:hover {
+      color: var(--white);
+    }
+
+    .sub-tab-btn.active {
+      color: var(--white);
+      border-bottom-color: var(--white);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .card-body {
+      padding: 1.5rem;
+    }
+
+    /* Form UI */
+    .input-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid var(--border-line);
+      border-radius: var(--radius-md);
+      padding: 0.95rem 1rem;
+      color: var(--white);
+      font-size: 0.9rem;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--white);
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: var(--white);
+      color: var(--bg-black);
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 0.9rem;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+
+    .submit-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* Loader */
+    .loader {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      padding: 2rem 0;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--border-line);
+      border-top-color: var(--white);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    /* Result Output */
+    .result-container {
+      margin-top: 1.25rem;
+      background: rgba(0, 0, 0, 0.75);
+      border: 1px solid var(--border-line);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.65rem 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid var(--border-line);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: monospace;
+    }
+
+    .icon-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .icon-btn:hover { color: var(--white); }
+
+    pre {
+      padding: 1rem;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    code {
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: #a1a1aa;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .hidden { display: none !important; }
+
+    .footer {
+      margin-top: auto;
+      text-align: center;
+      padding: 2rem 0 1rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-line);
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Responsive adjustments */
+    @media (min-width: 640px) {
+      .input-wrapper { flex-direction: row; }
+      .submit-btn { width: auto; padding: 0 1.5rem; }
+    }
+
+    @media (max-width: 768px) {
+      .hamburger-btn { display: block; }
+
+      .nav-menu {
+        position: absolute;
+        top: calc(100% + 0.5rem);
+        left: 0;
+        right: 0;
+        background: #0f0f11; /* Solid dark opacity untuk mencegah tembus */
+        border: 1px solid var(--border-line);
+        border-radius: var(--radius-lg);
+        flex-direction: column;
+        padding: 0.75rem;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9);
+        display: none;
+      }
+
+      .nav-menu.active {
+        display: flex;
+      }
+
+      .nav-btn {
+        width: 100%;
+        justify-content: flex-start;
+        padding: 0.85rem 1rem;
+      }
+
+      .hero-title { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="bg-canvas"></canvas>
+
+  <div class="app-container">
+    <header class="navbar">
+      <div class="brand">
+        <span class="brand-geo"></span>
+        <h1>THERESIA API</h1>
+      </div>
+
+      <button class="hamburger-btn" id="hamburger-toggle" aria-label="Toggle Menu">
+        <i data-lucide="menu"></i>
+      </button>
+
+      <nav class="nav-menu" id="nav-menu">
+        <button class="nav-btn active" data-category="download">
+          <i data-lucide="download"></i> Downloader Engine
+        </button>
+        <button class="nav-btn" data-category="search">
+          <i data-lucide="search"></i> Search Engine
+        </button>
+      </nav>
+    </header>
+
+    <main class="main-content">
+      <section class="hero-section">
+        <h2 class="hero-title">SIMPLE STRUCTURE.<br><span class="text-stroke">SUBTLE DEPTH.</span></h2>
+        <p class="hero-subtitle">Platform utilitas serbaguna K-Frame dengan pemisahan modul API cepat & presisi.</p>
+      </section>
+
+      <section class="tool-card">
+        <div class="sub-tabs-wrapper">
+          <div class="sub-tabs" id="sub-tabs-container"></div>
+        </div>
+
+        <div class="card-body">
+          <form id="tool-form">
+            <div class="input-wrapper">
+              <input type="text" id="user-input" placeholder="Masukkan URL..." required autocomplete="off" />
+              <button type="submit" id="btn-submit" class="submit-btn">
+                <span>Eksekusi</span>
+                <i data-lucide="arrow-right"></i>
+              </button>
+            </div>
+          </form>
+
+          <div id="loader" class="loader hidden">
+            <div class="spinner"></div>
+            <span>Memproses data dari endpoint API...</span>
+          </div>
+
+          <div id="result-container" class="result-container hidden">
+            <div class="result-header">
+              <span id="endpoint-path">Path: /api/download/tiktok.js</span>
+              <button id="btn-copy" class="icon-btn" title="Salin JSON"><i data-lucide="copy"></i></button>
+            </div>
+            <pre><code id="json-output"></code></pre>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>&copy; 2026 Theresia Api. Engineered with K-Frame Design System.</p>
+    </footer>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+
+      // Background Grid Canvas
+      const canvas = document.getElementById("bg-canvas");
+      const ctx = canvas.getContext("2d");
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resizeCanvas();
+      window.addEventListener("resize", resizeCanvas);
+
+      function drawGrid() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.035)";
+        ctx.lineWidth = 1;
+
+        const gridSize = 40;
+        for (let x = 0; x < canvas.width; x += gridSize) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, canvas.height);
+          ctx.stroke();
+        }
+        for (let y = 0; y < canvas.height; y += gridSize) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(canvas.width, y);
+          ctx.stroke();
+        }
+      }
+
+      function animate() {
+        drawGrid();
+        requestAnimationFrame(animate);
+      }
+      animate();
+
+      // Hamburger Menu Toggle
+      const hamburgerBtn = document.getElementById("hamburger-toggle");
+      const navMenu = document.getElementById("nav-menu");
+
+      hamburgerBtn.addEventListener("click", () => {
+        navMenu.classList.toggle("active");
+        const isOpen = navMenu.classList.contains("active");
+        hamburgerBtn.innerHTML = isOpen ? `<i data-lucide="x"></i>` : `<i data-lucide="menu"></i>`;
+        lucide.createIcons();
+      });
+
+      // Tab Configuration
+      const config = {
+        download: [
+          { id: "tiktok", name: "TikTok", icon: "video", placeholder: "Masukkan URL video TikTok..." },
+          { id: "douyin", name: "Douyin", icon: "film", placeholder: "Masukkan URL video Douyin..." },
+          { id: "youtube", name: "YouTube", icon: "youtube", placeholder: "Masukkan URL video YouTube..." }
+        ],
+        search: [
+          { id: "pinterest", name: "Pinterest Search", icon: "image", placeholder: "Masukkan kata kunci pencarian Pinterest..." }
+        ]
+      };
+
+      let activeCategory = "download";
+      let activeSubTab = "tiktok";
+
+      const navBtns = document.querySelectorAll(".nav-btn");
+      const subTabsContainer = document.getElementById("sub-tabs-container");
+      const inputEl = document.getElementById("user-input");
+
+      function renderSubTabs() {
+        subTabsContainer.innerHTML = "";
+        const currentSubTabs = config[activeCategory];
+        activeSubTab = currentSubTabs[0].id;
+
+        currentSubTabs.forEach((tab, index) => {
+          const btn = document.createElement("button");
+          btn.className = `sub-tab-btn ${index === 0 ? 'active' : ''}`;
+          btn.dataset.sub = tab.id;
+          btn.innerHTML = `<i data-lucide="${tab.icon}"></i> ${tab.name}`;
+          
+          btn.addEventListener("click", () => {
+            document.querySelectorAll(".sub-tab-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            activeSubTab = tab.id;
+            inputEl.placeholder = tab.placeholder;
+          });
+
+          subTabsContainer.appendChild(btn);
+        });
+
+        inputEl.placeholder = currentSubTabs[0].placeholder;
+        lucide.createIcons();
+      }
+
+      renderSubTabs();
+
+      navBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+          navBtns.forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          activeCategory = btn.dataset.category;
+          
+          navMenu.classList.remove("active");
+          hamburgerBtn.innerHTML = `<i data-lucide="menu"></i>`;
+          lucide.createIcons();
+          
+          renderSubTabs();
+        });
+      });
+
+      // Submit Handler
+      const form = document.getElementById("tool-form");
+      const loader = document.getElementById("loader");
+      const resultContainer = document.getElementById("result-container");
+      const jsonOutput = document.getElementById("json-output");
+      const endpointPath = document.getElementById("endpoint-path");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const query = inputEl.value.trim();
+        if (!query) return;
+
+        loader.classList.remove("hidden");
+        resultContainer.classList.add("hidden");
+
+        const apiPath = `/api/${activeCategory}/${activeSubTab}.js?${activeCategory === 'search' ? 'q' : 'url'}=${encodeURIComponent(query)}`;
+        endpointPath.textContent = `Path: ${apiPath}`;
+
+        try {
+          const response = await fetch(apiPath);
+          const data = await response.json();
+          jsonOutput.textContent = JSON.stringify(data, null, 2);
+          resultContainer.classList.remove("hidden");
+        } catch (err) {
+          jsonOutput.textContent = JSON.stringify({
+            status: false,
+            message: "Gagal terhubung ke API.",
+            endpoint: apiPath,
+            error: err.message
+          }, null, 2);
+          resultContainer.classList.remove("hidden");
+        } finally {
+          loader.classList.add("hidden");
+        }
+      });
+
+      document.getElementById("btn-copy").addEventListener("click", () => {
+        navigator.clipboard.writeText(jsonOutput.textContent);
+        alert("JSON Response berhasil disalin!");
+      });
+    });
+  </script>
+</body>
+</html>
