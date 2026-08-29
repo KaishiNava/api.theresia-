@@ -148,7 +148,7 @@
       line-height:1.65;  
     }
 
-    /* Hero Custom Video Player (16:9) */
+    /* Video Banner Clean 16:9 tanpa kontrol UI */
     .hero-thumb-wrapper {
       max-width: 800px;
       margin: 22px auto 0;
@@ -165,9 +165,9 @@
       height: 100%;
       object-fit: cover;
       display: block;
+      pointer-events: none; /* Mencegah user mengklik video */
     }
   
-    /* Banner */  
     .banner{  
       position:relative;  
       min-height:150px;  
@@ -330,7 +330,6 @@
       color:#ffb1b1;font-size:.76rem;line-height:1.5;  
     }  
   
-    /* Media result */  
     .media-result{  
       margin-top:15px;  
       border:1px solid var(--line);  
@@ -529,13 +528,12 @@
       Masukkan URL atau kata kunci, lalu biarkan endpoint memprosesnya.  
     </p>  
 
-    <!-- Thumb Video 16:9 Custom Hero -->
+    <!-- Video Banner 16:9 Tanpa Kontrol UI (Autoplay Silent) -->
     <div class="hero-thumb-wrapper">
-      <video id="hero-custom-video" controls muted loop playsinline></video>
+      <video id="hero-custom-video" autoplay muted loop playsinline></video>
     </div>
   </section>  
 
-  <!-- Banner area -->  
   <section class="banner" aria-label="Banner">  
     <div class="banner-content">  
       <div class="banner-copy">  
@@ -559,7 +557,7 @@
       <div class="endpoint-info">  
         <div class="endpoint-pill">  
           <span class="method">GET</span>  
-          <span id="endpoint-label">/api/tiktok?url=...</span>  
+          <span id="endpoint-label">/api/download/tiktok?url=...</span>  
         </div>  
         <span class="status-dot" id="status-dot" title="Status"></span>  
       </div>  
@@ -630,29 +628,25 @@
     document.addEventListener("DOMContentLoaded", () => {  
       lucide.createIcons();  
 
-      /* ==========================================  
-         SETTING MANUALLY HERO VIDEO & POSTER (16:9)  
-         Ganti URL di bawah ini sesuai keinginan  
-         ========================================== */  
+      /* Video URL Banner */
       const CUSTOM_HERO_VIDEO = "https://files.catbox.moe/blti0s.mp4";  
-      const CUSTOM_HERO_POSTER = ""; // Opsional: URL Gambar Poster/Thumbnail
+      const CUSTOM_HERO_POSTER = ""; 
 
       const heroVideo = document.getElementById("hero-custom-video");
       if (heroVideo && CUSTOM_HERO_VIDEO) {
         heroVideo.src = CUSTOM_HERO_VIDEO;
         if (CUSTOM_HERO_POSTER) heroVideo.poster = CUSTOM_HERO_POSTER;
+        heroVideo.play().catch(() => {});
       }
 
-      /* ==========================================  
-         ENDPOINT CONFIG  
-         ========================================== */  
+      /* Path endpoint disesuaikan dengan folder Vercel */  
       const config = {  
         download: [  
           {  
             id: "tiktok",  
             name: "TikTok",  
             icon: "video",  
-            endpoint: "/api/tiktok",  
+            endpoint: "/api/download/tiktok",  
             placeholder: "Masukkan URL video TikTok...",  
             hint: "TikTok: URL video publik.",  
             type: "video"  
@@ -661,7 +655,7 @@
             id: "douyin",  
             name: "Douyin",  
             icon: "film",  
-            endpoint: "/api/douyin",  
+            endpoint: "/api/download/douyin",  
             placeholder: "Masukkan URL video Douyin...",  
             hint: "Douyin: URL video publik.",  
             type: "video"  
@@ -670,7 +664,7 @@
             id: "youtube",  
             name: "YouTube",  
             icon: "youtube",  
-            endpoint: "/api/youtube",  
+            endpoint: "/api/download/youtube",  
             placeholder: "Masukkan URL video YouTube...",  
             hint: "YouTube: URL video yang dapat diproses provider.",  
             type: "video"  
@@ -681,7 +675,7 @@
             id: "pinterest",  
             name: "Pinterest",  
             icon: "image",  
-            endpoint: "/api/pinterest",  
+            endpoint: "/api/search/pinterest",  
             placeholder: "Contoh: Anime, cyberpunk, landscape...",  
             hint: "Pinterest Search: masukkan kata kunci gambar.",  
             type: "image"  
@@ -797,7 +791,11 @@
       }  
   
       function showError(message) {  
-        errorBox.textContent = message;  
+        if (typeof message === "object") {  
+          errorBox.textContent = message.message || JSON.stringify(message);  
+        } else {  
+          errorBox.textContent = message;  
+        }  
         errorBox.classList.remove("hidden");  
         setStatus(false);  
       }  
@@ -1095,7 +1093,7 @@
           });  
   
         } catch (error) {  
-          showError(error.message || "Gagal terhubung ke endpoint.");  
+          showError(error.message || error);  
         } finally {  
           loader.classList.add("hidden");  
           submit.disabled = false;  
@@ -1165,9 +1163,7 @@
         }  
       });  
   
-      /* ==========================================  
-         ANIMATED GRID BACKGROUND  
-         ========================================== */  
+      /* Canvas background animation */  
       const canvas = $("bg-canvas");  
       const ctx = canvas.getContext("2d");  
       let width = 0;  
