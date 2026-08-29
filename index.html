@@ -1,605 +1,1221 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Theresia Api — K-Frame Multi-Tools</title>
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <style>
-    :root {
-      --bg-black: #080808;
-      --surface-dark: rgba(18, 18, 20, 0.85);
-      --surface-card: rgba(255, 255, 255, 0.03);
-      --border-line: rgba(255, 255, 255, 0.12);
-      --border-focus: rgba(255, 255, 255, 0.5);
-      --text-main: #f4f4f5;
-      --text-muted: #8e8e93;
-      --white: #ffffff;
-      --radius-lg: 18px;
-      --radius-md: 10px;
-      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+<!DOCTYPE html>  <html lang="id">  
+<head>  
+  <meta charset="UTF-8" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />  
+  <meta name="theme-color" content="#080808" />  
+  <meta name="description" content="Theresia API — K-Frame Multi-Tools" />  
+  <title>Theresia API — K-Frame Multi-Tools</title>    <script src="https://unpkg.com/lucide@latest"></script>    <style>  
+    :root{  
+      --bg:#060607;  
+      --panel:rgba(15,15,17,.84);  
+      --panel-2:rgba(255,255,255,.035);  
+      --panel-3:rgba(0,0,0,.52);  
+      --line:rgba(255,255,255,.11);  
+      --line-strong:rgba(255,255,255,.22);  
+      --text:#f5f5f5;  
+      --muted:#92929a;  
+      --muted-2:#686870;  
+      --white:#fff;  
+      --danger:#ff6b6b;  
+      --success:#b7f7d1;  
+      --radius:20px;  
+      --radius-sm:12px;  
+      --ease:cubic-bezier(.16,1,.3,1);  
+    }  
+  
+    *{box-sizing:border-box;margin:0;padding:0}  
+    html{scroll-behavior:smooth}  
+    body{  
+      min-height:100vh;  
+      overflow-x:hidden;  
+      background:var(--bg);  
+      color:var(--text);  
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;  
+    }  
+    button,input{font:inherit}  
+    button{cursor:pointer}  
+    a{color:inherit;text-decoration:none}  
+  
+    #bg-canvas{  
+      position:fixed;  
+      inset:0;  
+      width:100%;  
+      height:100%;  
+      z-index:-3;  
+      pointer-events:none;  
+    }  
+  
+    .noise{  
+      position:fixed;  
+      inset:0;  
+      z-index:-2;  
+      pointer-events:none;  
+      opacity:.035;  
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");  
+    }  
+  
+    .app{  
+      width:min(1180px,100%);  
+      margin:auto;  
+      padding:18px;  
+      min-height:100vh;  
+    }  
+  
+    .navbar{  
+      position:sticky;  
+      top:14px;  
+      z-index:1000;  
+      display:flex;  
+      align-items:center;  
+      justify-content:space-between;  
+      gap:14px;  
+      padding:12px 14px;  
+      margin-bottom:18px;  
+      border:1px solid var(--line);  
+      border-radius:18px;  
+      background:rgba(10,10,11,.76);  
+      backdrop-filter:blur(24px);  
+      -webkit-backdrop-filter:blur(24px);  
+      box-shadow:0 18px 60px rgba(0,0,0,.38);  
+    }  
+  
+    .brand{display:flex;align-items:center;gap:11px;min-width:0}  
+    .brand-mark{  
+      width:34px;height:34px;display:grid;place-items:center;  
+      border:1px solid var(--line-strong);  
+      border-radius:10px;  
+      background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.025));  
+      position:relative;overflow:hidden;  
+    }  
+    .brand-mark:after{  
+      content:"";  
+      width:11px;height:11px;  
+      border:1px solid #fff;  
+      transform:rotate(45deg);  
+    }  
+    .brand strong{font-size:.9rem;letter-spacing:2px;white-space:nowrap}  
+    .brand small{display:block;color:var(--muted);font-size:.66rem;margin-top:2px;letter-spacing:.8px}  
+  
+    .nav-menu{display:flex;align-items:center;gap:5px}  
+    .nav-btn,.hamburger{  
+      border:1px solid transparent;  
+      color:var(--muted);  
+      background:transparent;  
+      border-radius:11px;  
+      transition:.25s var(--ease);  
+    }  
+    .nav-btn{  
+      display:flex;align-items:center;gap:8px;  
+      padding:9px 12px;  
+      font-size:.8rem;font-weight:700;  
+    }  
+    .nav-btn:hover,.nav-btn.active{  
+      color:#fff;background:rgba(255,255,255,.065);border-color:var(--line);  
+    }  
+    .hamburger{display:none;padding:9px;color:#fff}  
+  
+    .hero{  
+      padding:34px 0 24px;  
+      text-align:center;  
+      animation:rise .7s var(--ease) both;  
+    }  
+    .eyebrow{  
+      display:inline-flex;align-items:center;gap:8px;  
+      padding:6px 10px;  
+      margin-bottom:13px;  
+      border:1px solid var(--line);  
+      border-radius:999px;  
+      background:rgba(255,255,255,.035);  
+      color:var(--muted);  
+      font-size:.7rem;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;  
+    }  
+    .eyebrow i{width:12px;height:12px}  
+    .hero h1{  
+      font-size:clamp(2.15rem,6vw,4.4rem);  
+      line-height:.98;  
+      letter-spacing:-2.8px;  
+      font-weight:950;  
+    }  
+    .stroke{  
+      color:transparent;  
+      -webkit-text-stroke:1px rgba(255,255,255,.72);  
+    }  
+    .hero p{  
+      max-width:650px;  
+      margin:15px auto 0;  
+      color:var(--muted);  
+      font-size:.92rem;  
+      line-height:1.65;  
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-
-    body {
-      background-color: var(--bg-black);
-      color: var(--text-main);
-      min-height: 100vh;
-      overflow-x: hidden;
+    /* Hero Custom Video Player (16:9) */
+    .hero-thumb-wrapper {
+      max-width: 800px;
+      margin: 22px auto 0;
+      aspect-ratio: 16 / 9;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #000;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
       position: relative;
     }
-
-    /* Grid Canvas Background Animation */
-    #bg-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
+    .hero-thumb-wrapper video {
       width: 100%;
       height: 100%;
-      z-index: 0;
-      pointer-events: none;
+      object-fit: cover;
+      display: block;
     }
+  
+    /* Banner */  
+    .banner{  
+      position:relative;  
+      min-height:150px;  
+      margin:24px 0 18px;  
+      border:1px solid var(--line);  
+      border-radius:var(--radius);  
+      overflow:hidden;  
+      background:  
+        radial-gradient(circle at 15% 20%,rgba(255,255,255,.1),transparent 28%),  
+        radial-gradient(circle at 85% 80%,rgba(255,255,255,.07),transparent 28%),  
+        rgba(255,255,255,.025);  
+      box-shadow:0 24px 80px rgba(0,0,0,.3);  
+    }  
+    .banner:before{  
+      content:"";  
+      position:absolute;inset:0;  
+      background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),  
+                       linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);  
+      background-size:34px 34px;  
+      mask-image:linear-gradient(to bottom,#000,transparent);  
+    }  
+    .banner-content{  
+      position:relative;z-index:2;  
+      min-height:150px;  
+      display:flex;align-items:center;justify-content:space-between;  
+      gap:20px;padding:25px 28px;  
+    }  
+    .banner-copy span{  
+      color:var(--muted);  
+      font-size:.68rem;font-weight:900;letter-spacing:1.7px;text-transform:uppercase;  
+    }  
+    .banner-copy h2{margin-top:7px;font-size:clamp(1.25rem,3vw,2rem);letter-spacing:-.7px}  
+    .banner-copy p{margin-top:7px;color:var(--muted);font-size:.78rem;max-width:560px;line-height:1.5}  
+    .banner-badge{  
+      flex:0 0 auto;  
+      width:82px;height:82px;  
+      display:grid;place-items:center;  
+      border:1px solid var(--line-strong);  
+      border-radius:22px;  
+      background:rgba(255,255,255,.045);  
+      box-shadow:inset 0 1px rgba(255,255,255,.1);  
+    }  
+    .banner-badge i{width:30px;height:30px}  
+  
+    .tool-card{  
+      border:1px solid var(--line);  
+      border-radius:var(--radius);  
+      overflow:hidden;  
+      background:var(--panel);  
+      backdrop-filter:blur(25px);  
+      -webkit-backdrop-filter:blur(25px);  
+      box-shadow:0 28px 90px rgba(0,0,0,.5);  
+      animation:rise .8s .08s var(--ease) both;  
+    }  
+  
+    .sub-tabs-wrap{  
+      overflow-x:auto;  
+      scrollbar-width:none;  
+      border-bottom:1px solid var(--line);  
+    }  
+    .sub-tabs-wrap::-webkit-scrollbar{display:none}  
+    .sub-tabs{  
+      display:flex;  
+      gap:4px;  
+      padding:9px 12px;  
+      min-width:max-content;  
+    }  
+    .sub-tab{  
+      display:flex;align-items:center;gap:8px;  
+      padding:10px 13px;  
+      border:1px solid transparent;  
+      border-radius:11px;  
+      background:transparent;  
+      color:var(--muted);  
+      font-size:.78rem;font-weight:750;  
+      transition:.25s var(--ease);  
+    }  
+    .sub-tab:hover,.sub-tab.active{  
+      color:#fff;  
+      background:rgba(255,255,255,.055);  
+      border-color:var(--line);  
+    }  
+    .sub-tab i{width:15px;height:15px}  
+  
+    .body{padding:18px}  
+    .endpoint-info{  
+      display:flex;align-items:center;justify-content:space-between;  
+      gap:10px;margin-bottom:12px;  
+    }  
+    .endpoint-pill{  
+      min-width:0;display:flex;align-items:center;gap:8px;  
+      color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;  
+      font-size:.7rem;  
+    }  
+    .method{  
+      padding:4px 7px;border:1px solid var(--line);  
+      border-radius:7px;color:#fff;background:rgba(255,255,255,.05);  
+      font-weight:900;font-size:.62rem;  
+    }  
+    .status-dot{  
+      width:7px;height:7px;border-radius:50%;  
+      background:#8f8f96;box-shadow:0 0 12px rgba(255,255,255,.3);  
+    }  
+    .status-dot.online{background:#fff;box-shadow:0 0 12px rgba(255,255,255,.7)}  
+  
+    .form{  
+      display:grid;  
+      grid-template-columns:1fr auto;  
+      gap:9px;  
+    }  
+    .input-wrap{position:relative}  
+    .input-wrap i{  
+      position:absolute;left:13px;top:50%;transform:translateY(-50%);  
+      width:17px;color:var(--muted-2);pointer-events:none;  
+    }  
+    .input{  
+      width:100%;height:48px;  
+      padding:0 14px 0 40px;  
+      color:#fff;background:rgba(0,0,0,.55);  
+      border:1px solid var(--line);  
+      border-radius:12px;outline:none;  
+      transition:.25s var(--ease);  
+      font-size:.84rem;  
+    }  
+    .input:focus{border-color:var(--line-strong);box-shadow:0 0 0 3px rgba(255,255,255,.035)}  
+    .submit{  
+      height:48px;padding:0 18px;  
+      display:flex;align-items:center;justify-content:center;gap:8px;  
+      border:1px solid #fff;border-radius:12px;  
+      background:#fff;color:#070707;  
+      font-size:.8rem;font-weight:900;  
+      transition:.25s var(--ease);  
+    }  
+    .submit:hover{transform:translateY(-1px);box-shadow:0 12px 30px rgba(255,255,255,.1)}  
+    .submit:disabled{opacity:.55;cursor:not-allowed;transform:none}  
+  
+    .hint{  
+      margin-top:9px;color:var(--muted-2);font-size:.68rem;  
+      display:flex;align-items:center;gap:7px;  
+    }  
+    .hint i{width:13px}  
+  
+    .loader{  
+      display:flex;align-items:center;gap:10px;  
+      margin-top:14px;padding:13px 14px;  
+      border:1px solid var(--line);border-radius:12px;  
+      background:rgba(255,255,255,.025);  
+      color:var(--muted);font-size:.76rem;  
+    }  
+    .spinner{  
+      width:16px;height:16px;border:2px solid var(--line);  
+      border-top-color:#fff;border-radius:50%;  
+      animation:spin .7s linear infinite;  
+    }  
+  
+    .error{  
+      margin-top:14px;padding:13px 14px;  
+      border:1px solid rgba(255,107,107,.22);  
+      border-radius:12px;background:rgba(255,107,107,.045);  
+      color:#ffb1b1;font-size:.76rem;line-height:1.5;  
+    }  
+  
+    /* Media result */  
+    .media-result{  
+      margin-top:15px;  
+      border:1px solid var(--line);  
+      border-radius:16px;  
+      overflow:hidden;  
+      background:rgba(0,0,0,.48);  
+      animation:rise .45s var(--ease) both;  
+    }  
+    .media-head{  
+      display:flex;align-items:center;justify-content:space-between;  
+      gap:12px;padding:11px 13px;border-bottom:1px solid var(--line);  
+    }  
+    .media-head .label{  
+      display:flex;align-items:center;gap:8px;  
+      color:var(--muted);font-size:.68rem;font-family:ui-monospace,monospace;  
+    }  
+    .media-head .label i{width:14px}  
+    .media-actions{display:flex;gap:6px}  
+    .small-btn{  
+      display:flex;align-items:center;gap:6px;  
+      padding:7px 9px;border:1px solid var(--line);  
+      border-radius:99px;color:var(--muted);background:rgba(255,255,255,.025);  
+      font-size:.68rem;font-weight:800;  
+    }  
+    .small-btn:hover{color:#fff;border-color:var(--line-strong)}  
+    .small-btn i{width:13px}  
+  
+    .media-grid{  
+      display:grid;  
+      grid-template-columns:minmax(0,1.15fr) minmax(250px,.85fr);  
+    }  
+    .preview{  
+      min-width:0;  
+      background:#000;  
+      position:relative;  
+      aspect-ratio:16/9;  
+      display:flex;align-items:center;justify-content:center;  
+      overflow:hidden;  
+    }  
+    .preview video,.preview img{  
+      width:100%;height:100%;display:block;  
+      object-fit:contain;background:#000;  
+    }  
+    .preview img{object-fit:cover}  
+    .preview-empty{  
+      color:var(--muted);font-size:.75rem;  
+      display:flex;flex-direction:column;align-items:center;gap:8px;  
+    }  
+    .preview-empty i{width:25px;height:25px}  
+  
+    .media-details{padding:17px;border-left:1px solid var(--line)}  
+    .media-details h3{  
+      font-size:1rem;line-height:1.35;letter-spacing:-.2px;  
+      margin-bottom:10px;  
+    }  
+    .meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:15px}  
+    .chip{  
+      padding:5px 8px;border:1px solid var(--line);  
+      border-radius:8px;color:var(--muted);background:rgba(255,255,255,.025);  
+      font-size:.63rem;  
+    }  
+    .download-main{  
+      width:100%;min-height:43px;  
+      display:flex;align-items:center;justify-content:center;gap:8px;  
+      border:1px solid #fff;border-radius:11px;  
+      background:#fff;color:#000;  
+      font-size:.76rem;font-weight:900;  
+      margin-bottom:7px;  
+    }  
+    .download-main:hover{opacity:.9}  
+    .secondary-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}  
+    .secondary-actions .small-btn{justify-content:center}  
+  
+    .pinterest-grid{  
+      padding:14px;  
+      columns:4 180px;  
+      column-gap:12px;  
+    }  
+    .pin-card{  
+      break-inside:avoid;  
+      margin-bottom:12px;  
+      border:1px solid var(--line);  
+      border-radius:13px;  
+      overflow:hidden;  
+      background:rgba(255,255,255,.025);  
+      transition:.3s var(--ease);  
+    }  
+    .pin-card:hover{transform:translateY(-3px);border-color:var(--line-strong)}  
+    .pin-image{display:block;width:100%;height:auto;background:#111}  
+    .pin-body{padding:9px}  
+    .pin-title{  
+      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;  
+      overflow:hidden;font-size:.7rem;line-height:1.4;margin-bottom:8px;  
+    }  
+    .pin-buttons{display:grid;grid-template-columns:1fr 1fr;gap:5px}  
+    .pin-buttons a,.pin-buttons button{  
+      min-width:0;display:flex;align-items:center;justify-content:center;gap:5px;  
+      padding:7px 5px;border:1px solid var(--line);border-radius:8px;  
+      background:rgba(255,255,255,.025);color:var(--muted);font-size:.62rem;font-weight:800;  
+    }  
+    .pin-buttons a:hover,.pin-buttons button:hover{color:#fff;border-color:var(--line-strong)}  
+    .pin-buttons i{width:12px}  
+  
+    .json-box{  
+      margin-top:15px;  
+      border:1px solid var(--line);border-radius:15px;overflow:hidden;  
+      background:rgba(0,0,0,.5);  
+    }  
+    .json-head{  
+      display:flex;align-items:center;justify-content:space-between;  
+      padding:9px 12px;border-bottom:1px solid var(--line);  
+      color:var(--muted);font:700 .65rem ui-monospace,monospace;  
+    }  
+    pre{  
+      max-height:280px;overflow:auto;padding:13px;  
+      color:#aaa;font: .7rem/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;  
+      white-space:pre-wrap;word-break:break-word;  
+    }  
+  
+    .footer{  
+      padding:30px 0 18px;text-align:center;color:var(--muted-2);  
+      font-size:.68rem;  
+    }  
+  
+    .hidden{display:none!important}  
+  
+    @keyframes spin{to{transform:rotate(360deg)}}  
+    @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}  
+  
+    @media(max-width:800px){  
+      .app{padding:12px}  
+      .navbar{top:8px}  
+      .hamburger{display:block}  
+      .nav-menu{  
+        position:absolute;left:0;right:0;top:calc(100% + 7px);  
+        display:none;flex-direction:column;align-items:stretch;  
+        padding:7px;border:1px solid var(--line);border-radius:15px;  
+        background:#0c0c0d;box-shadow:0 22px 50px rgba(0,0,0,.7);  
+      }  
+      .nav-menu.open{display:flex}  
+      .nav-btn{justify-content:flex-start}  
+      .banner-content{padding:22px}  
+      .banner-badge{width:65px;height:65px;border-radius:17px}  
+      .media-grid{grid-template-columns:1fr}  
+      .media-details{border-left:0;border-top:1px solid var(--line)}  
+    }  
+  
+    @media(max-width:560px){  
+      .hero{padding:25px 5px 18px}  
+      .hero h1{letter-spacing:-1.8px}  
+      .hero p{font-size:.82rem}  
+      .banner{min-height:135px}  
+      .banner-content{min-height:135px;padding:18px}  
+      .banner-badge{display:none}  
+      .body{padding:13px}  
+      .form{grid-template-columns:1fr}  
+      .submit{width:100%}  
+      .endpoint-info{align-items:flex-start}  
+      .endpoint-pill{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}  
+      .pinterest-grid{columns:2 130px;padding:9px;column-gap:8px}  
+      .pin-card{margin-bottom:8px}  
+      .pin-body{padding:7px}  
+      .media-head{align-items:flex-start}  
+      .media-actions{flex-wrap:wrap;justify-content:flex-end}  
+    }  
+  </style>  </head>  <body>  
+  <canvas id="bg-canvas"></canvas>  
+  <div class="noise"></div>    <div class="app">  
+    <header class="navbar">  
+      <a class="brand" href="#" aria-label="Theresia API">  
+        <span class="brand-mark"></span>  
+        <span>  
+          <strong>THERESIA API</strong>  
+          <small>K-FRAME MULTI-TOOLS</small>  
+        </span>  
+      </a>  <button class="hamburger" id="hamburger" aria-label="Buka menu">  
+    <i data-lucide="menu"></i>  
+  </button>  
 
-    .app-container {
-      position: relative;
-      z-index: 1;
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
+  <nav class="nav-menu" id="nav-menu">  
+    <button class="nav-btn active" data-category="download">  
+      <i data-lucide="download"></i> Downloader  
+    </button>  
+    <button class="nav-btn" data-category="search">  
+      <i data-lucide="search"></i> Search Engine  
+    </button>  
+  </nav>  
+</header>  
 
-    /* Navbar */
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 1.25rem;
-      background: var(--surface-dark);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--border-line);
-      border-radius: var(--radius-lg);
-      margin-bottom: 2rem;
-      position: relative;
-      z-index: 999;
-    }
+<main>  
+  <section class="hero">  
+    <div class="eyebrow"><i data-lucide="sparkles"></i> API MULTI-TOOLS</div>  
+    <h1>FAST TOOLS.<br><span class="stroke">CLEAN OUTPUT.</span></h1>  
+    <p>  
+      Interface Theresia API untuk downloader dan search engine.  
+      Masukkan URL atau kata kunci, lalu biarkan endpoint memprosesnya.  
+    </p>  
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
+    <!-- Thumb Video 16:9 Custom Hero -->
+    <div class="hero-thumb-wrapper">
+      <video id="hero-custom-video" controls muted loop playsinline></video>
+    </div>
+  </section>  
 
-    .brand-geo {
-      width: 14px;
-      height: 14px;
-      border: 1.5px solid var(--white);
-      transform: rotate(45deg);
-    }
+  <!-- Banner area -->  
+  <section class="banner" aria-label="Banner">  
+    <div class="banner-content">  
+      <div class="banner-copy">  
+        <span>Theresia API • Advertisement Space</span>  
+        <h2>YOUR BANNER GOES HERE.</h2>  
+        <p>  
+          Area banner responsif untuk iklan, promo, partner, announcement,  
+          atau informasi API. Tidak mengganggu form utama.  
+        </p>  
+      </div>  
+      <div class="banner-badge"><i data-lucide="megaphone"></i></div>  
+    </div>  
+  </section>  
 
-    .brand h1 {
-      font-size: 1.05rem;
-      font-weight: 800;
-      letter-spacing: 2px;
-    }
+  <section class="tool-card">  
+    <div class="sub-tabs-wrap">  
+      <div class="sub-tabs" id="sub-tabs"></div>  
+    </div>  
 
-    /* Desktop Navigation Menu */
-    .nav-menu {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
+    <div class="body">  
+      <div class="endpoint-info">  
+        <div class="endpoint-pill">  
+          <span class="method">GET</span>  
+          <span id="endpoint-label">/api/tiktok?url=...</span>  
+        </div>  
+        <span class="status-dot" id="status-dot" title="Status"></span>  
+      </div>  
 
-    .nav-btn {
-      background: transparent;
-      border: 1px solid transparent;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.6rem 1rem;
-      border-radius: var(--radius-md);
-      transition: var(--transition);
-    }
+      <form class="form" id="tool-form">  
+        <div class="input-wrap">  
+          <i id="input-icon" data-lucide="link"></i>  
+          <input  
+            class="input"  
+            id="user-input"  
+            type="text"  
+            autocomplete="off"  
+            required  
+            placeholder="Masukkan URL video TikTok..."  
+          />  
+        </div>  
+        <button class="submit" id="submit-btn" type="submit">  
+          <span id="submit-text">Execute Endpoint</span>  
+          <i data-lucide="arrow-right"></i>  
+        </button>  
+      </form>  
 
-    .nav-btn:hover, .nav-btn.active {
-      color: var(--white);
-      background: rgba(255, 255, 255, 0.06);
-      border-color: var(--border-line);
-    }
+      <div class="hint" id="input-hint">  
+        <i data-lucide="info"></i>  
+        <span>Gunakan URL publik yang dapat diakses provider.</span>  
+      </div>  
 
-    .hamburger-btn {
-      display: none;
-      background: transparent;
-      border: none;
-      color: var(--white);
-      cursor: pointer;
-      padding: 0.4rem;
-    }
+      <div class="loader hidden" id="loader">  
+        <span class="spinner"></span>  
+        <span id="loader-text">Memproses endpoint...</span>  
+      </div>  
 
-    /* Hero Section */
-    .hero-section {
-      text-align: center;
-      margin-bottom: 2rem;
-      position: relative;
-      z-index: 1;
-    }
+      <div class="error hidden" id="error-box"></div>  
 
-    .hero-title {
-      font-size: 2.5rem;
-      font-weight: 900;
-      line-height: 1.15;
-      letter-spacing: -0.5px;
-      margin-bottom: 0.75rem;
-    }
+      <section class="media-result hidden" id="media-result">  
+        <div class="media-head">  
+          <div class="label">  
+            <i data-lucide="play-square"></i>  
+            <span id="result-type">MEDIA RESULT</span>  
+          </div>  
+          <div class="media-actions">  
+            <button class="small-btn" id="copy-result" type="button">  
+              <i data-lucide="copy"></i> Copy JSON  
+            </button>  
+          </div>  
+        </div>  
+        <div id="media-content"></div>  
+      </section>  
 
-    .text-stroke {
-      color: transparent;
-      -webkit-text-stroke: 1px rgba(255, 255, 255, 0.8);
-    }
+      <section class="json-box hidden" id="json-box">  
+        <div class="json-head">  
+          <span>RAW API RESPONSE</span>  
+          <button class="small-btn" id="toggle-json" type="button">  
+            <i data-lucide="code-2"></i> JSON  
+          </button>  
+        </div>  
+        <pre id="json-output"></pre>  
+      </section>  
+    </div>  
+  </section>  
+</main>  
 
-    .hero-subtitle {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      max-width: 480px;
-      margin: 0 auto;
-      line-height: 1.5;
-    }
+<footer class="footer">  
+  © 2026 Theresia API · K-Frame Design System · Built for responsive web.  
+</footer>
 
-    /* Tool Card */
-    .tool-card {
-      background: var(--surface-dark);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--border-line);
-      border-radius: var(--radius-lg);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-      overflow: hidden;
-      position: relative;
-      z-index: 1;
-    }
+  </div>    <script>  
+    document.addEventListener("DOMContentLoaded", () => {  
+      lucide.createIcons();  
 
-    /* Sub Tabs Slider (Scrollable Mobile) */
-    .sub-tabs-wrapper {
-      border-bottom: 1px solid var(--border-line);
-      overflow-x: auto;
-      scrollbar-width: none; /* Firefox */
-      -ms-overflow-style: none;  /* IE 10+ */
-    }
-    .sub-tabs-wrapper::-webkit-scrollbar {
-      display: none; /* Chrome/Safari */
-    }
+      /* ==========================================  
+         SETTING MANUALLY HERO VIDEO & POSTER (16:9)  
+         Ganti URL di bawah ini sesuai keinginan  
+         ========================================== */  
+      const CUSTOM_HERO_VIDEO = "https://files.catbox.moe/blti0s.mp4";  
+      const CUSTOM_HERO_POSTER = ""; // Opsional: URL Gambar Poster/Thumbnail
 
-    .sub-tabs {
-      display: flex;
-      gap: 0.5rem;
-      padding: 1rem 1.25rem 0;
-      min-width: max-content;
-    }
-
-    .sub-tab-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      padding: 0.65rem 1.1rem;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      border-radius: var(--radius-md) var(--radius-md) 0 0;
-      border-bottom: 2px solid transparent;
-      transition: var(--transition);
-      white-space: nowrap;
-    }
-
-    .sub-tab-btn:hover {
-      color: var(--white);
-    }
-
-    .sub-tab-btn.active {
-      color: var(--white);
-      border-bottom-color: var(--white);
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    .card-body {
-      padding: 1.5rem;
-    }
-
-    /* Form UI */
-    .input-wrapper {
-      display: flex;
-      flex-direction: column;
-      gap: 0.85rem;
-    }
-
-    input[type="text"] {
-      width: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      border: 1px solid var(--border-line);
-      border-radius: var(--radius-md);
-      padding: 0.95rem 1rem;
-      color: var(--white);
-      font-size: 0.9rem;
-      outline: none;
-      transition: var(--transition);
-    }
-
-    input[type="text"]:focus {
-      border-color: var(--white);
-    }
-
-    .submit-btn {
-      width: 100%;
-      background: var(--white);
-      color: var(--bg-black);
-      border: none;
-      border-radius: var(--radius-md);
-      padding: 0.9rem;
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      transition: var(--transition);
-    }
-
-    .submit-btn:hover {
-      opacity: 0.9;
-    }
-
-    /* Loader */
-    .loader {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      padding: 2rem 0;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-    }
-
-    .spinner {
-      width: 18px;
-      height: 18px;
-      border: 2px solid var(--border-line);
-      border-top-color: var(--white);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    /* Result Output */
-    .result-container {
-      margin-top: 1.25rem;
-      background: rgba(0, 0, 0, 0.75);
-      border: 1px solid var(--border-line);
-      border-radius: var(--radius-md);
-      overflow: hidden;
-    }
-
-    .result-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.65rem 1rem;
-      background: rgba(255, 255, 255, 0.03);
-      border-bottom: 1px solid var(--border-line);
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      font-family: monospace;
-    }
-
-    .icon-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      cursor: pointer;
-    }
-
-    .icon-btn:hover { color: var(--white); }
-
-    pre {
-      padding: 1rem;
-      max-height: 280px;
-      overflow-y: auto;
-    }
-
-    code {
-      font-family: monospace;
-      font-size: 0.8rem;
-      color: #a1a1aa;
-      white-space: pre-wrap;
-      word-break: break-all;
-    }
-
-    .hidden { display: none !important; }
-
-    .footer {
-      margin-top: auto;
-      text-align: center;
-      padding: 2rem 0 1rem;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      border-top: 1px solid var(--border-line);
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* Responsive adjustments */
-    @media (min-width: 640px) {
-      .input-wrapper { flex-direction: row; }
-      .submit-btn { width: auto; padding: 0 1.5rem; }
-    }
-
-    @media (max-width: 768px) {
-      .hamburger-btn { display: block; }
-
-      .nav-menu {
-        position: absolute;
-        top: calc(100% + 0.5rem);
-        left: 0;
-        right: 0;
-        background: #0f0f11; /* Solid dark opacity untuk mencegah tembus */
-        border: 1px solid var(--border-line);
-        border-radius: var(--radius-lg);
-        flex-direction: column;
-        padding: 0.75rem;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9);
-        display: none;
+      const heroVideo = document.getElementById("hero-custom-video");
+      if (heroVideo && CUSTOM_HERO_VIDEO) {
+        heroVideo.src = CUSTOM_HERO_VIDEO;
+        if (CUSTOM_HERO_POSTER) heroVideo.poster = CUSTOM_HERO_POSTER;
       }
 
-      .nav-menu.active {
-        display: flex;
-      }
-
-      .nav-btn {
-        width: 100%;
-        justify-content: flex-start;
-        padding: 0.85rem 1rem;
-      }
-
-      .hero-title { font-size: 2rem; }
-    }
-  </style>
-</head>
-<body>
-
-  <canvas id="bg-canvas"></canvas>
-
-  <div class="app-container">
-    <header class="navbar">
-      <div class="brand">
-        <span class="brand-geo"></span>
-        <h1>THERESIA API</h1>
-      </div>
-
-      <button class="hamburger-btn" id="hamburger-toggle" aria-label="Toggle Menu">
-        <i data-lucide="menu"></i>
-      </button>
-
-      <nav class="nav-menu" id="nav-menu">
-        <button class="nav-btn active" data-category="download">
-          <i data-lucide="download"></i> Downloader Engine
-        </button>
-        <button class="nav-btn" data-category="search">
-          <i data-lucide="search"></i> Search Engine
-        </button>
-      </nav>
-    </header>
-
-    <main class="main-content">
-      <section class="hero-section">
-        <h2 class="hero-title">SIMPLE STRUCTURE.<br><span class="text-stroke">SUBTLE DEPTH.</span></h2>
-        <p class="hero-subtitle">Platform utilitas serbaguna K-Frame dengan pemisahan modul API cepat & presisi.</p>
-      </section>
-
-      <section class="tool-card">
-        <div class="sub-tabs-wrapper">
-          <div class="sub-tabs" id="sub-tabs-container"></div>
-        </div>
-
-        <div class="card-body">
-          <form id="tool-form">
-            <div class="input-wrapper">
-              <input type="text" id="user-input" placeholder="Masukkan URL..." required autocomplete="off" />
-              <button type="submit" id="btn-submit" class="submit-btn">
-                <span>Eksekusi</span>
-                <i data-lucide="arrow-right"></i>
-              </button>
-            </div>
-          </form>
-
-          <div id="loader" class="loader hidden">
-            <div class="spinner"></div>
-            <span>Memproses data dari endpoint API...</span>
-          </div>
-
-          <div id="result-container" class="result-container hidden">
-            <div class="result-header">
-              <span id="endpoint-path">Path: /api/download/tiktok.js</span>
-              <button id="btn-copy" class="icon-btn" title="Salin JSON"><i data-lucide="copy"></i></button>
-            </div>
-            <pre><code id="json-output"></code></pre>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer class="footer">
-      <p>&copy; 2026 Theresia Api. Engineered with K-Frame Design System.</p>
-    </footer>
-  </div>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      lucide.createIcons();
-
-      // Background Grid Canvas
-      const canvas = document.getElementById("bg-canvas");
-      const ctx = canvas.getContext("2d");
-
-      function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      }
-      resizeCanvas();
-      window.addEventListener("resize", resizeCanvas);
-
-      function drawGrid() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.035)";
-        ctx.lineWidth = 1;
-
-        const gridSize = 40;
-        for (let x = 0; x < canvas.width; x += gridSize) {
-          ctx.beginPath();
-          ctx.moveTo(x, 0);
-          ctx.lineTo(x, canvas.height);
-          ctx.stroke();
-        }
-        for (let y = 0; y < canvas.height; y += gridSize) {
-          ctx.beginPath();
-          ctx.moveTo(0, y);
-          ctx.lineTo(canvas.width, y);
-          ctx.stroke();
-        }
-      }
-
-      function animate() {
-        drawGrid();
-        requestAnimationFrame(animate);
-      }
-      animate();
-
-      // Hamburger Menu Toggle
-      const hamburgerBtn = document.getElementById("hamburger-toggle");
-      const navMenu = document.getElementById("nav-menu");
-
-      hamburgerBtn.addEventListener("click", () => {
-        navMenu.classList.toggle("active");
-        const isOpen = navMenu.classList.contains("active");
-        hamburgerBtn.innerHTML = isOpen ? `<i data-lucide="x"></i>` : `<i data-lucide="menu"></i>`;
-        lucide.createIcons();
-      });
-
-      // Tab Configuration
-      const config = {
-        download: [
-          { id: "tiktok", name: "TikTok", icon: "video", placeholder: "Masukkan URL video TikTok..." },
-          { id: "douyin", name: "Douyin", icon: "film", placeholder: "Masukkan URL video Douyin..." },
-          { id: "youtube", name: "YouTube", icon: "youtube", placeholder: "Masukkan URL video YouTube..." }
-        ],
-        search: [
-          { id: "pinterest", name: "Pinterest Search", icon: "image", placeholder: "Masukkan kata kunci pencarian Pinterest..." }
-        ]
-      };
-
-      let activeCategory = "download";
-      let activeSubTab = "tiktok";
-
-      const navBtns = document.querySelectorAll(".nav-btn");
-      const subTabsContainer = document.getElementById("sub-tabs-container");
-      const inputEl = document.getElementById("user-input");
-
-      function renderSubTabs() {
-        subTabsContainer.innerHTML = "";
-        const currentSubTabs = config[activeCategory];
-        activeSubTab = currentSubTabs[0].id;
-
-        currentSubTabs.forEach((tab, index) => {
-          const btn = document.createElement("button");
-          btn.className = `sub-tab-btn ${index === 0 ? 'active' : ''}`;
-          btn.dataset.sub = tab.id;
-          btn.innerHTML = `<i data-lucide="${tab.icon}"></i> ${tab.name}`;
-          
-          btn.addEventListener("click", () => {
-            document.querySelectorAll(".sub-tab-btn").forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
-            activeSubTab = tab.id;
-            inputEl.placeholder = tab.placeholder;
-          });
-
-          subTabsContainer.appendChild(btn);
-        });
-
-        inputEl.placeholder = currentSubTabs[0].placeholder;
-        lucide.createIcons();
-      }
-
-      renderSubTabs();
-
-      navBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-          navBtns.forEach(b => b.classList.remove("active"));
-          btn.classList.add("active");
-          activeCategory = btn.dataset.category;
-          
-          navMenu.classList.remove("active");
-          hamburgerBtn.innerHTML = `<i data-lucide="menu"></i>`;
-          lucide.createIcons();
-          
-          renderSubTabs();
-        });
-      });
-
-      // Submit Handler
-      const form = document.getElementById("tool-form");
-      const loader = document.getElementById("loader");
-      const resultContainer = document.getElementById("result-container");
-      const jsonOutput = document.getElementById("json-output");
-      const endpointPath = document.getElementById("endpoint-path");
-
-      form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const query = inputEl.value.trim();
-        if (!query) return;
-
-        loader.classList.remove("hidden");
-        resultContainer.classList.add("hidden");
-
-        const apiPath = `/api/${activeCategory}/${activeSubTab}.js?${activeCategory === 'search' ? 'q' : 'url'}=${encodeURIComponent(query)}`;
-        endpointPath.textContent = `Path: ${apiPath}`;
-
-        try {
-          const response = await fetch(apiPath);
-          const data = await response.json();
-          jsonOutput.textContent = JSON.stringify(data, null, 2);
-          resultContainer.classList.remove("hidden");
-        } catch (err) {
-          jsonOutput.textContent = JSON.stringify({
-            status: false,
-            message: "Gagal terhubung ke API.",
-            endpoint: apiPath,
-            error: err.message
-          }, null, 2);
-          resultContainer.classList.remove("hidden");
-        } finally {
-          loader.classList.add("hidden");
-        }
-      });
-
-      document.getElementById("btn-copy").addEventListener("click", () => {
-        navigator.clipboard.writeText(jsonOutput.textContent);
-        alert("JSON Response berhasil disalin!");
-      });
-    });
-  </script>
-</body>
+      /* ==========================================  
+         ENDPOINT CONFIG  
+         ========================================== */  
+      const config = {  
+        download: [  
+          {  
+            id: "tiktok",  
+            name: "TikTok",  
+            icon: "video",  
+            endpoint: "/api/tiktok",  
+            placeholder: "Masukkan URL video TikTok...",  
+            hint: "TikTok: URL video publik.",  
+            type: "video"  
+          },  
+          {  
+            id: "douyin",  
+            name: "Douyin",  
+            icon: "film",  
+            endpoint: "/api/douyin",  
+            placeholder: "Masukkan URL video Douyin...",  
+            hint: "Douyin: URL video publik.",  
+            type: "video"  
+          },  
+          {  
+            id: "youtube",  
+            name: "YouTube",  
+            icon: "youtube",  
+            endpoint: "/api/youtube",  
+            placeholder: "Masukkan URL video YouTube...",  
+            hint: "YouTube: URL video yang dapat diproses provider.",  
+            type: "video"  
+          }  
+        ],  
+        search: [  
+          {  
+            id: "pinterest",  
+            name: "Pinterest",  
+            icon: "image",  
+            endpoint: "/api/pinterest",  
+            placeholder: "Contoh: Anime, cyberpunk, landscape...",  
+            hint: "Pinterest Search: masukkan kata kunci gambar.",  
+            type: "image"  
+          }  
+        ]  
+      };  
+  
+      let activeCategory = "download";  
+      let activeTool = config.download[0];  
+      let lastData = null;  
+      let currentVideo = null;  
+  
+      const $ = (id) => document.getElementById(id);  
+  
+      const navMenu = $("nav-menu");  
+      const hamburger = $("hamburger");  
+      const subTabs = $("sub-tabs");  
+      const input = $("user-input");  
+      const inputIcon = $("input-icon");  
+      const endpointLabel = $("endpoint-label");  
+      const inputHint = $("input-hint").querySelector("span");  
+      const form = $("tool-form");  
+      const submit = $("submit-btn");  
+      const submitText = $("submit-text");  
+      const loader = $("loader");  
+      const loaderText = $("loader-text");  
+      const errorBox = $("error-box");  
+      const mediaResult = $("media-result");  
+      const mediaContent = $("media-content");  
+      const resultType = $("result-type");  
+      const jsonBox = $("json-box");  
+      const jsonOutput = $("json-output");  
+      const statusDot = $("status-dot");  
+  
+      function escapeHtml(value) {  
+        return String(value ?? "")  
+          .replace(/&/g, "&amp;")  
+          .replace(/</g, "&lt;")  
+          .replace(/>/g, "&gt;")  
+          .replace(/"/g, "&quot;")  
+          .replace(/'/g, "&#039;");  
+      }  
+  
+      function safeUrl(value) {  
+        if (!value || typeof value !== "string") return null;  
+        try {  
+          const u = new URL(value);  
+          if (!["http:", "https:"].includes(u.protocol)) return null;  
+          return u.href;  
+        } catch {  
+          return null;  
+        }  
+      }  
+  
+      function setStatus(online) {  
+        statusDot.classList.toggle("online", !!online);  
+      }  
+  
+      function renderTabs() {  
+        subTabs.innerHTML = "";  
+        const tools = config[activeCategory];  
+  
+        tools.forEach((tool, index) => {  
+          const btn = document.createElement("button");  
+          btn.className = "sub-tab" + (index === 0 ? " active" : "");  
+          btn.innerHTML = `<i data-lucide="${tool.icon}"></i>${tool.name}`;  
+  
+          btn.addEventListener("click", () => {  
+            document.querySelectorAll(".sub-tab").forEach(x => x.classList.remove("active"));  
+            btn.classList.add("active");  
+            activeTool = tool;  
+            updateToolUI();  
+            clearResult();  
+          });  
+  
+          subTabs.appendChild(btn);  
+        });  
+  
+        lucide.createIcons();  
+        updateToolUI();  
+      }  
+  
+      function updateToolUI() {  
+        input.placeholder = activeTool.placeholder;  
+        inputHint.textContent = activeTool.hint;  
+        endpointLabel.textContent =  
+          activeTool.endpoint +  
+          (activeTool.type === "image" ? "?q=..." : "?url=...");  
+        inputIcon.setAttribute(  
+          "data-lucide",  
+          activeTool.type === "image" ? "search" : "link"  
+        );  
+        submitText.textContent =  
+          activeTool.type === "image" ? "Search Pins" : "Execute Endpoint";  
+  
+        lucide.createIcons();  
+      }  
+  
+      function clearResult() {  
+        mediaResult.classList.add("hidden");  
+        jsonBox.classList.add("hidden");  
+        errorBox.classList.add("hidden");  
+        mediaContent.innerHTML = "";  
+        jsonOutput.textContent = "";  
+        lastData = null;  
+        setStatus(false);  
+  
+        if (currentVideo) {  
+          currentVideo.pause();  
+          currentVideo.src = "";  
+          currentVideo = null;  
+        }  
+      }  
+  
+      function showError(message) {  
+        errorBox.textContent = message;  
+        errorBox.classList.remove("hidden");  
+        setStatus(false);  
+      }  
+  
+      function getVideoUrl(data) {  
+        const d = data?.data || data || {};  
+        return safeUrl(  
+          d.download_url ||  
+          d.video_nowm ||  
+          d.video ||  
+          d.url ||  
+          d.video_wm ||  
+          null  
+        );  
+      }  
+  
+      function getThumbnail(data) {  
+        const d = data?.data || data || {};  
+        return safeUrl(  
+          d.cover ||  
+          d.thumbnail ||  
+          d.thumb ||  
+          d.poster ||  
+          null  
+        );  
+      }  
+  
+      function createVideoPlayer(videoUrl, title) {  
+        const safe = safeUrl(videoUrl);  
+        if (!safe) return null;  
+  
+        const video = document.createElement("video");  
+        video.controls = true;  
+        video.autoplay = true;  
+        video.muted = true;  
+        video.loop = true;  
+        video.playsInline = true;  
+        video.preload = "metadata";  
+        video.setAttribute("webkit-playsinline", "true");  
+        video.setAttribute("aria-label", title || "Video preview");  
+        video.src = safe;  
+  
+        const forcePlay = () => {  
+          video.muted = true;  
+          const p = video.play();  
+          if (p && typeof p.catch === "function") p.catch(() => {});  
+        };  
+  
+        video.addEventListener("loadeddata", forcePlay);  
+        video.addEventListener("canplay", forcePlay);  
+        video.addEventListener("pause", () => {  
+          if (!document.hidden) {  
+            setTimeout(forcePlay, 120);  
+          }  
+        });  
+  
+        currentVideo = video;  
+        setTimeout(forcePlay, 100);  
+  
+        return video;  
+      }  
+  
+      function renderVideo(data) {  
+        const d = data?.data || data || {};  
+        const videoUrl = getVideoUrl(data);  
+        const thumb = getThumbnail(data);  
+        const title = d.title || d.filename || "Video Result";  
+  
+        resultType.textContent = activeTool.name.toUpperCase() + " VIDEO";  
+  
+        const wrapper = document.createElement("div");  
+        wrapper.className = "media-grid";  
+  
+        const preview = document.createElement("div");  
+        preview.className = "preview";  
+  
+        if (videoUrl) {  
+          const video = createVideoPlayer(videoUrl, title);  
+          if (video) {  
+            if (thumb) {  
+              video.poster = thumb;  
+            }  
+            preview.appendChild(video);  
+          }  
+        }  
+  
+        if (!preview.firstChild) {  
+          preview.innerHTML =  
+            `<div class="preview-empty">  
+              <i data-lucide="video-off"></i>  
+              <span>Preview video tidak tersedia</span>  
+            </div>`;  
+        }  
+  
+        const details = document.createElement("div");  
+        details.className = "media-details";  
+  
+        const chips = [];  
+        if (d.status) chips.push(d.status);  
+        if (d.provider) chips.push(d.provider);  
+        if (d.author?.nickname) chips.push(d.author.nickname);  
+  
+        details.innerHTML = `  
+          <h3>${escapeHtml(title)}</h3>  
+          <div class="meta">  
+            ${chips.map(x => `<span class="chip">${escapeHtml(x)}</span>`).join("")}  
+          </div>  
+          <button class="download-main" id="main-download" type="button">  
+            <i data-lucide="download"></i>  
+            Download Video  
+          </button>  
+          <div class="secondary-actions">  
+            <button class="small-btn" id="copy-video" type="button">  
+              <i data-lucide="copy"></i> Copy URL  
+            </button>  
+            <button class="small-btn" id="open-video" type="button">  
+              <i data-lucide="external-link"></i> Open  
+            </button>  
+          </div>  
+        `;  
+  
+        wrapper.append(preview, details);  
+        mediaContent.replaceChildren(wrapper);  
+        mediaResult.classList.remove("hidden");  
+  
+        $("main-download").addEventListener("click", () => {  
+          if (!videoUrl) return;  
+          const a = document.createElement("a");  
+          a.href = videoUrl;  
+          a.download = `${activeTool.id}_${Date.now()}.mp4`;  
+          a.target = "_blank";  
+          a.rel = "noopener";  
+          document.body.appendChild(a);  
+          a.click();  
+          a.remove();  
+        });  
+  
+        $("copy-video").addEventListener("click", async () => {  
+          if (!videoUrl) return;  
+          await navigator.clipboard?.writeText(videoUrl);  
+          $("copy-video").innerHTML =  
+            `<i data-lucide="check"></i> Copied`;  
+          lucide.createIcons();  
+        });  
+  
+        $("open-video").addEventListener("click", () => {  
+          if (videoUrl) window.open(videoUrl, "_blank", "noopener");  
+        });  
+  
+        lucide.createIcons();  
+      }  
+  
+      function renderPinterest(data) {  
+        const results = Array.isArray(data?.results)  
+          ? data.results  
+          : Array.isArray(data?.data?.results)  
+            ? data.data.results  
+            : [];  
+  
+        resultType.textContent =  
+          `PINTEREST • ${results.length} RESULTS`;  
+  
+        if (!results.length) {  
+          mediaContent.innerHTML = `  
+            <div class="preview" style="aspect-ratio:auto;min-height:170px">  
+              <div class="preview-empty">  
+                <i data-lucide="image-off"></i>  
+                <span>Tidak ada gambar ditemukan.</span>  
+              </div>  
+            </div>`;  
+          mediaResult.classList.remove("hidden");  
+          lucide.createIcons();  
+          return;  
+        }  
+  
+        const grid = document.createElement("div");  
+        grid.className = "pinterest-grid";  
+  
+        results.forEach((item, index) => {  
+          const imageUrl = safeUrl(  
+            item.download_direct_url ||  
+            item.image_url ||  
+            item.url  
+          );  
+  
+          if (!imageUrl) return;  
+  
+          const pinUrl = safeUrl(item.pin_url);  
+          const card = document.createElement("article");  
+          card.className = "pin-card";  
+  
+          card.innerHTML = `  
+            <img class="pin-image"  
+                 src="${escapeHtml(imageUrl)}"  
+                 alt="${escapeHtml(item.title || "Pinterest image")}"  
+                 loading="${index < 4 ? "eager" : "lazy"}"  
+                 referrerpolicy="no-referrer">  
+            <div class="pin-body">  
+              <div class="pin-title">${escapeHtml(item.title || "Pinterest Image")}</div>  
+              <div class="pin-buttons">  
+                <a href="${escapeHtml(imageUrl)}"  
+                   download="pinterest_${Date.now()}_${index + 1}.jpg"  
+                   target="_blank"  
+                   rel="noopener">  
+                  <i data-lucide="download"></i> Download  
+                </a>  
+                ${pinUrl  
+                  ? `<a href="${escapeHtml(pinUrl)}" target="_blank" rel="noopener">  
+                       <i data-lucide="external-link"></i> Pin  
+                     </a>`  
+                  : `<button type="button" disabled>  
+                       <i data-lucide="link"></i> No Pin  
+                     </button>`}  
+              </div>  
+            </div>  
+          `;  
+  
+          grid.appendChild(card);  
+        });  
+  
+        mediaContent.replaceChildren(grid);  
+        mediaResult.classList.remove("hidden");  
+        lucide.createIcons();  
+      }  
+  
+      async function execute() {  
+        const query = input.value.trim();  
+        if (!query) return;  
+  
+        clearResult();  
+  
+        loader.classList.remove("hidden");  
+        submit.disabled = true;  
+        setStatus(false);  
+        loaderText.textContent =  
+          activeTool.type === "image"  
+            ? `Mencari "${query}" di Pinterest...`  
+            : `Memproses ${activeTool.name} endpoint...`;  
+  
+        const parameter =  
+          activeTool.type === "image" ? "q" : "url";  
+  
+        const endpoint =  
+          `${activeTool.endpoint}?${parameter}=${encodeURIComponent(query)}`;  
+  
+        endpointLabel.textContent = endpoint;  
+  
+        try {  
+          const response = await fetch(endpoint, {  
+            method: "GET",  
+            headers: {  
+              "Accept": "application/json"  
+            }  
+          });  
+  
+          const contentType =  
+            response.headers.get("content-type") || "";  
+  
+          let data;  
+  
+          if (contentType.includes("application/json")) {  
+            data = await response.json();  
+          } else {  
+            const text = await response.text();  
+            throw new Error(  
+              `Endpoint mengembalikan response bukan JSON (HTTP ${response.status}). ${text.slice(0, 160)}`  
+            );  
+          }  
+  
+          lastData = data;  
+          jsonOutput.textContent =  
+            JSON.stringify(data, null, 2);  
+  
+          jsonBox.classList.remove("hidden");  
+  
+          if (!response.ok || data?.status === false) {  
+            throw new Error(  
+              data?.message ||  
+              data?.error ||  
+              `Request gagal dengan HTTP ${response.status}`  
+            );  
+          }  
+  
+          setStatus(true);  
+  
+          if (activeTool.type === "image") {  
+            renderPinterest(data);  
+          } else {  
+            renderVideo(data);  
+          }  
+  
+          mediaResult.scrollIntoView({  
+            behavior: "smooth",  
+            block: "nearest"  
+          });  
+  
+        } catch (error) {  
+          showError(error.message || "Gagal terhubung ke endpoint.");  
+        } finally {  
+          loader.classList.add("hidden");  
+          submit.disabled = false;  
+        }  
+      }  
+  
+      form.addEventListener("submit", e => {  
+        e.preventDefault();  
+        execute();  
+      });  
+  
+      $("copy-result").addEventListener("click", async () => {  
+        if (!lastData) return;  
+        try {  
+          await navigator.clipboard.writeText(  
+            JSON.stringify(lastData, null, 2)  
+          );  
+          $("copy-result").innerHTML =  
+            `<i data-lucide="check"></i> Copied`;  
+          lucide.createIcons();  
+  
+          setTimeout(() => {  
+            $("copy-result").innerHTML =  
+              `<i data-lucide="copy"></i> Copy JSON`;  
+            lucide.createIcons();  
+          }, 1300);  
+        } catch {}  
+      });  
+  
+      $("toggle-json").addEventListener("click", () => {  
+        jsonBox.classList.toggle("hidden");  
+      });  
+  
+      document.querySelectorAll(".nav-btn").forEach(btn => {  
+        btn.addEventListener("click", () => {  
+          document.querySelectorAll(".nav-btn")  
+            .forEach(x => x.classList.remove("active"));  
+  
+          btn.classList.add("active");  
+          activeCategory = btn.dataset.category;  
+          activeTool = config[activeCategory][0];  
+  
+          navMenu.classList.remove("open");  
+          hamburger.innerHTML =  
+            `<i data-lucide="menu"></i>`;  
+  
+          clearResult();  
+          renderTabs();  
+          lucide.createIcons();  
+        });  
+      });  
+  
+      hamburger.addEventListener("click", () => {  
+        navMenu.classList.toggle("open");  
+        hamburger.innerHTML =  
+          navMenu.classList.contains("open")  
+            ? `<i data-lucide="x"></i>`  
+            : `<i data-lucide="menu"></i>`;  
+        lucide.createIcons();  
+      });  
+  
+      document.addEventListener("visibilitychange", () => {  
+        if (!document.hidden && currentVideo) {  
+          currentVideo.muted = true;  
+          const p = currentVideo.play();  
+          if (p?.catch) p.catch(() => {});  
+        }  
+      });  
+  
+      /* ==========================================  
+         ANIMATED GRID BACKGROUND  
+         ========================================== */  
+      const canvas = $("bg-canvas");  
+      const ctx = canvas.getContext("2d");  
+      let width = 0;  
+      let height = 0;  
+      let raf = 0;  
+  
+      function resizeCanvas() {  
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);  
+        width = window.innerWidth;  
+        height = window.innerHeight;  
+        canvas.width = width * dpr;  
+        canvas.height = height * dpr;  
+        canvas.style.width = width + "px";  
+        canvas.style.height = height + "px";  
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);  
+      }  
+  
+      function drawGrid(time) {  
+        ctx.clearRect(0, 0, width, height);  
+  
+        const gap = 42;  
+        const drift = (time * 0.006) % gap;  
+  
+        ctx.strokeStyle = "rgba(255,255,255,.032)";  
+        ctx.lineWidth = 1;  
+  
+        for (let x = -gap + drift; x < width + gap; x += gap) {  
+          ctx.beginPath();  
+          ctx.moveTo(x, 0);  
+          ctx.lineTo(x, height);  
+          ctx.stroke();  
+        }  
+  
+        for (let y = -gap + drift; y < height + gap; y += gap) {  
+          ctx.beginPath();  
+          ctx.moveTo(0, y);  
+          ctx.lineTo(width, y);  
+          ctx.stroke();  
+        }  
+  
+        raf = requestAnimationFrame(drawGrid);  
+      }  
+  
+      resizeCanvas();  
+      window.addEventListener("resize", resizeCanvas, { passive: true });  
+      raf = requestAnimationFrame(drawGrid);  
+  
+      renderTabs();  
+    });  
+  </script>  </body>  
 </html>
