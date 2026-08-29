@@ -4,12 +4,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />  
   <meta name="theme-color" content="#080808" />  
   <meta name="description" content="Theresia API — K-Frame Multi-Tools" />  
-  <title>Theresia API — K-Frame Multi-Tools</title>    <script src="https://unpkg.com/lucide@latest"></script>    <style>  
+  <title>Theresia API — K-Frame Multi-Tools</title>    
+  <script src="https://unpkg.com/lucide@latest"></script>    
+  <style>  
     :root{  
       --bg:#060607;  
-      --panel:rgba(15,15,17,.84);  
+      --panel:rgba(15, 15, 17, 0.88);  
       --panel-2:rgba(255,255,255,.035);  
-      --panel-3:rgba(0,0,0,.52);  
       --line:rgba(255,255,255,.11);  
       --line-strong:rgba(255,255,255,.22);  
       --text:#f5f5f5;  
@@ -17,9 +18,7 @@
       --muted-2:#686870;  
       --white:#fff;  
       --danger:#ff6b6b;  
-      --success:#b7f7d1;  
-      --radius:20px;  
-      --radius-sm:12px;  
+      --radius:22px;  
       --ease:cubic-bezier(.16,1,.3,1);  
     }  
   
@@ -30,10 +29,10 @@
       overflow-x:hidden;  
       background:var(--bg);  
       color:var(--text);  
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;  
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;  
     }  
-    button,input{font:inherit}  
-    button{cursor:pointer}  
+    button,input{font:inherit;outline:none}  
+    button{cursor:pointer;border:none;background:transparent}  
     a{color:inherit;text-decoration:none}  
   
     #bg-canvas{  
@@ -57,107 +56,108 @@
     .app{  
       width:min(1180px,100%);  
       margin:auto;  
-      padding:18px;  
+      padding:16px;  
       min-height:100vh;  
+      display:flex;  
+      flex-direction:column;  
     }  
   
     .navbar{  
       position:sticky;  
-      top:14px;  
+      top:12px;  
       z-index:1000;  
       display:flex;  
       align-items:center;  
       justify-content:space-between;  
       gap:14px;  
-      padding:12px 14px;  
-      margin-bottom:18px;  
+      padding:10px 14px;  
+      margin-bottom:20px;  
       border:1px solid var(--line);  
-      border-radius:18px;  
-      background:rgba(10,10,11,.76);  
+      border-radius:20px;  
+      background:rgba(10,10,11,.8);  
       backdrop-filter:blur(24px);  
       -webkit-backdrop-filter:blur(24px);  
-      box-shadow:0 18px 60px rgba(0,0,0,.38);  
+      box-shadow:0 12px 40px rgba(0,0,0,.3);  
     }  
   
-    .brand{display:flex;align-items:center;gap:11px;min-width:0}  
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}  
     .brand-mark{  
-      width:34px;height:34px;display:grid;place-items:center;  
+      width:36px;height:36px;display:grid;place-items:center;  
       border:1px solid var(--line-strong);  
-      border-radius:10px;  
-      background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.025));  
+      border-radius:12px;  
+      background:linear-gradient(135deg,rgba(255,255,255,.1),rgba(255,255,255,.02));  
       position:relative;overflow:hidden;  
     }  
     .brand-mark:after{  
       content:"";  
-      width:11px;height:11px;  
+      width:12px;height:12px;  
       border:1px solid #fff;  
       transform:rotate(45deg);  
     }  
-    .brand strong{font-size:.9rem;letter-spacing:2px;white-space:nowrap}  
-    .brand small{display:block;color:var(--muted);font-size:.66rem;margin-top:2px;letter-spacing:.8px}  
+    .brand strong{font-size:.95rem;letter-spacing:1.5px;white-space:nowrap}  
+    .brand small{display:block;color:var(--muted);font-size:.65rem;margin-top:2px;letter-spacing:1px}  
   
-    .nav-menu{display:flex;align-items:center;gap:5px}  
+    .nav-menu{display:flex;align-items:center;gap:6px}  
     .nav-btn,.hamburger{  
       border:1px solid transparent;  
       color:var(--muted);  
-      background:transparent;  
-      border-radius:11px;  
+      border-radius:12px;  
       transition:.25s var(--ease);  
     }  
     .nav-btn{  
       display:flex;align-items:center;gap:8px;  
-      padding:9px 12px;  
-      font-size:.8rem;font-weight:700;  
+      padding:10px 14px;  
+      font-size:.82rem;font-weight:600;  
     }  
     .nav-btn:hover,.nav-btn.active{  
-      color:#fff;background:rgba(255,255,255,.065);border-color:var(--line);  
+      color:#fff;background:rgba(255,255,255,.08);border-color:var(--line);  
     }  
-    .hamburger{display:none;padding:9px;color:#fff}  
+    .hamburger{display:none;padding:10px;color:#fff}  
   
     .hero{  
-      padding:34px 0 24px;  
+      padding:40px 0 30px;  
       text-align:center;  
       animation:rise .7s var(--ease) both;  
     }  
     .eyebrow{  
       display:inline-flex;align-items:center;gap:8px;  
-      padding:6px 10px;  
-      margin-bottom:13px;  
+      padding:6px 12px;  
+      margin-bottom:16px;  
       border:1px solid var(--line);  
       border-radius:999px;  
-      background:rgba(255,255,255,.035);  
+      background:rgba(255,255,255,.04);  
       color:var(--muted);  
-      font-size:.7rem;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;  
+      font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;  
     }  
-    .eyebrow i{width:12px;height:12px}  
+    .eyebrow i{width:14px;height:14px}  
     .hero h1{  
-      font-size:clamp(2.15rem,6vw,4.4rem);  
-      line-height:.98;  
-      letter-spacing:-2.8px;  
-      font-weight:950;  
+      font-size:clamp(2.2rem,6vw,4.5rem);  
+      line-height:.95;  
+      letter-spacing:-2px;  
+      font-weight:900;  
     }  
     .stroke{  
       color:transparent;  
-      -webkit-text-stroke:1px rgba(255,255,255,.72);  
+      -webkit-text-stroke:1px rgba(255,255,255,.7);  
     }  
     .hero p{  
-      max-width:650px;  
-      margin:15px auto 0;  
+      max-width:600px;  
+      margin:18px auto 0;  
       color:var(--muted);  
-      font-size:.92rem;  
-      line-height:1.65;  
-    }
-
-    /* Video Banner Clean 16:9 tanpa kontrol UI */
+      font-size:.95rem;  
+      line-height:1.6;  
+    }  
+  
+    /* Video Banner 16:9 Clean (Autoplay Silent) */
     .hero-thumb-wrapper {
       max-width: 800px;
-      margin: 22px auto 0;
+      margin: 28px auto 0;
       aspect-ratio: 16 / 9;
       border: 1px solid var(--line-strong);
       border-radius: var(--radius);
       overflow: hidden;
       background: #000;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
       position: relative;
     }
     .hero-thumb-wrapper video {
@@ -165,62 +165,59 @@
       height: 100%;
       object-fit: cover;
       display: block;
-      pointer-events: none; /* Mencegah user mengklik video */
+      pointer-events: none; /* Mencegah interaksi UI player */
     }
   
     .banner{  
       position:relative;  
-      min-height:150px;  
-      margin:24px 0 18px;  
+      margin:24px 0 20px;  
       border:1px solid var(--line);  
       border-radius:var(--radius);  
       overflow:hidden;  
       background:  
-        radial-gradient(circle at 15% 20%,rgba(255,255,255,.1),transparent 28%),  
-        radial-gradient(circle at 85% 80%,rgba(255,255,255,.07),transparent 28%),  
-        rgba(255,255,255,.025);  
-      box-shadow:0 24px 80px rgba(0,0,0,.3);  
+        radial-gradient(circle at 20% 30%,rgba(255,255,255,.08),transparent 30%),  
+        rgba(255,255,255,.02);  
+      box-shadow:0 20px 60px rgba(0,0,0,.25);  
     }  
     .banner:before{  
       content:"";  
       position:absolute;inset:0;  
-      background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),  
-                       linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);  
-      background-size:34px 34px;  
+      background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),  
+                       linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);  
+      background-size:40px 40px;  
       mask-image:linear-gradient(to bottom,#000,transparent);  
     }  
     .banner-content{  
       position:relative;z-index:2;  
-      min-height:150px;  
       display:flex;align-items:center;justify-content:space-between;  
-      gap:20px;padding:25px 28px;  
+      gap:20px;padding:30px;  
     }  
     .banner-copy span{  
       color:var(--muted);  
-      font-size:.68rem;font-weight:900;letter-spacing:1.7px;text-transform:uppercase;  
+      font-size:.7rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;  
     }  
-    .banner-copy h2{margin-top:7px;font-size:clamp(1.25rem,3vw,2rem);letter-spacing:-.7px}  
-    .banner-copy p{margin-top:7px;color:var(--muted);font-size:.78rem;max-width:560px;line-height:1.5}  
+    .banner-copy h2{margin-top:8px;font-size:clamp(1.3rem,3vw,2.2rem);letter-spacing:-.5px}  
+    .banner-copy p{margin-top:8px;color:var(--muted);font-size:.82rem;max-width:500px;line-height:1.5}  
     .banner-badge{  
       flex:0 0 auto;  
-      width:82px;height:82px;  
+      width:80px;height:80px;  
       display:grid;place-items:center;  
       border:1px solid var(--line-strong);  
-      border-radius:22px;  
-      background:rgba(255,255,255,.045);  
-      box-shadow:inset 0 1px rgba(255,255,255,.1);  
+      border-radius:24px;  
+      background:rgba(255,255,255,.05);  
     }  
-    .banner-badge i{width:30px;height:30px}  
+    .banner-badge i{width:32px;height:32px}  
   
     .tool-card{  
       border:1px solid var(--line);  
       border-radius:var(--radius);  
       overflow:hidden;  
       background:var(--panel);  
-      backdrop-filter:blur(25px);  
-      -webkit-backdrop-filter:blur(25px);  
-      box-shadow:0 28px 90px rgba(0,0,0,.5);  
-      animation:rise .8s .08s var(--ease) both;  
+      backdrop-filter:blur(30px);  
+      -webkit-backdrop-filter:blur(30px);  
+      box-shadow:0 30px 80px rgba(0,0,0,.6);  
+      animation:rise .8s .1s var(--ease) both;  
+      margin-bottom: 20px;
     }  
   
     .sub-tabs-wrap{  
@@ -231,273 +228,299 @@
     .sub-tabs-wrap::-webkit-scrollbar{display:none}  
     .sub-tabs{  
       display:flex;  
-      gap:4px;  
-      padding:9px 12px;  
+      gap:6px;  
+      padding:10px 14px;  
       min-width:max-content;  
     }  
     .sub-tab{  
       display:flex;align-items:center;gap:8px;  
-      padding:10px 13px;  
+      padding:10px 16px;  
       border:1px solid transparent;  
-      border-radius:11px;  
-      background:transparent;  
+      border-radius:12px;  
       color:var(--muted);  
-      font-size:.78rem;font-weight:750;  
-      transition:.25s var(--ease);  
+      font-size:.8rem;font-weight:700;  
+      transition:.2s var(--ease);  
     }  
     .sub-tab:hover,.sub-tab.active{  
       color:#fff;  
-      background:rgba(255,255,255,.055);  
+      background:rgba(255,255,255,.06);  
       border-color:var(--line);  
     }  
-    .sub-tab i{width:15px;height:15px}  
+    .sub-tab i{width:16px;height:16px}  
   
-    .body{padding:18px}  
+    .body{padding:20px}  
     .endpoint-info{  
       display:flex;align-items:center;justify-content:space-between;  
-      gap:10px;margin-bottom:12px;  
+      gap:12px;margin-bottom:16px;  
     }  
     .endpoint-pill{  
-      min-width:0;display:flex;align-items:center;gap:8px;  
-      color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;  
-      font-size:.7rem;  
+      min-width:0;display:flex;align-items:center;gap:10px;  
+      color:var(--muted);font-family:ui-monospace,SFMono-Regular,monospace;  
+      font-size:.72rem;  
+      background:rgba(0,0,0,0.3);
+      padding: 6px 12px;
+      border-radius: 99px;
+      border: 1px solid var(--line);
     }  
     .method{  
-      padding:4px 7px;border:1px solid var(--line);  
-      border-radius:7px;color:#fff;background:rgba(255,255,255,.05);  
-      font-weight:900;font-size:.62rem;  
+      font-weight:800;color:#fff;
     }  
     .status-dot{  
-      width:7px;height:7px;border-radius:50%;  
-      background:#8f8f96;box-shadow:0 0 12px rgba(255,255,255,.3);  
+      width:8px;height:8px;border-radius:50%;  
+      background:var(--muted);box-shadow:0 0 10px rgba(255,255,255,.2);  
     }  
-    .status-dot.online{background:#fff;box-shadow:0 0 12px rgba(255,255,255,.7)}  
+    .status-dot.online{background:var(--success);box-shadow:0 0 12px var(--success)}  
   
     .form{  
-      display:grid;  
-      grid-template-columns:1fr auto;  
-      gap:9px;  
+      display:flex;
+      flex-wrap: wrap;
+      gap:10px;  
     }  
-    .input-wrap{position:relative}  
+    .input-wrap{
+      position:relative;
+      flex: 1 1 280px;
+    }  
     .input-wrap i{  
-      position:absolute;left:13px;top:50%;transform:translateY(-50%);  
-      width:17px;color:var(--muted-2);pointer-events:none;  
+      position:absolute;left:14px;top:50%;transform:translateY(-50%);  
+      width:18px;color:var(--muted-2);pointer-events:none;  
     }  
     .input{  
-      width:100%;height:48px;  
-      padding:0 14px 0 40px;  
-      color:#fff;background:rgba(0,0,0,.55);  
+      width:100%;height:52px;  
+      padding:0 16px 0 42px;  
+      color:#fff;background:rgba(0,0,0,.6);  
       border:1px solid var(--line);  
-      border-radius:12px;outline:none;  
+      border-radius:14px;  
       transition:.25s var(--ease);  
-      font-size:.84rem;  
+      font-size:.88rem;  
     }  
-    .input:focus{border-color:var(--line-strong);box-shadow:0 0 0 3px rgba(255,255,255,.035)}  
+    .input:focus{border-color:var(--line-strong);box-shadow:0 0 0 4px rgba(255,255,255,.05)}  
     .submit{  
-      height:48px;padding:0 18px;  
+      height:52px;padding:0 24px;  
       display:flex;align-items:center;justify-content:center;gap:8px;  
-      border:1px solid #fff;border-radius:12px;  
-      background:#fff;color:#070707;  
-      font-size:.8rem;font-weight:900;  
-      transition:.25s var(--ease);  
+      border:1px solid #fff;border-radius:14px;  
+      background:#fff;color:#000;  
+      font-size:.85rem;font-weight:800;  
+      transition:.2s var(--ease);  
+      flex: 0 0 auto;
     }  
-    .submit:hover{transform:translateY(-1px);box-shadow:0 12px 30px rgba(255,255,255,.1)}  
-    .submit:disabled{opacity:.55;cursor:not-allowed;transform:none}  
+    .submit:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(255,255,255,.15)}  
+    .submit:disabled{opacity:.6;cursor:not-allowed;transform:none}  
   
     .hint{  
-      margin-top:9px;color:var(--muted-2);font-size:.68rem;  
-      display:flex;align-items:center;gap:7px;  
+      margin-top:12px;color:var(--muted-2);font-size:.72rem;  
+      display:flex;align-items:center;gap:6px;  
     }  
-    .hint i{width:13px}  
+    .hint i{width:14px}  
   
     .loader{  
-      display:flex;align-items:center;gap:10px;  
-      margin-top:14px;padding:13px 14px;  
-      border:1px solid var(--line);border-radius:12px;  
-      background:rgba(255,255,255,.025);  
-      color:var(--muted);font-size:.76rem;  
+      display:flex;align-items:center;gap:12px;  
+      margin-top:16px;padding:14px 16px;  
+      border:1px solid var(--line);border-radius:14px;  
+      background:rgba(255,255,255,.03);  
+      color:var(--muted);font-size:.8rem;  
     }  
     .spinner{  
-      width:16px;height:16px;border:2px solid var(--line);  
+      width:18px;height:18px;border:2px solid var(--line);  
       border-top-color:#fff;border-radius:50%;  
-      animation:spin .7s linear infinite;  
+      animation:spin .8s linear infinite;  
     }  
   
     .error{  
-      margin-top:14px;padding:13px 14px;  
-      border:1px solid rgba(255,107,107,.22);  
-      border-radius:12px;background:rgba(255,107,107,.045);  
-      color:#ffb1b1;font-size:.76rem;line-height:1.5;  
+      margin-top:16px;padding:14px 16px;  
+      border:1px solid rgba(255,107,107,.3);  
+      border-radius:14px;background:rgba(255,107,107,.08);  
+      color:#ffb1b1;font-size:.8rem;line-height:1.5;  
     }  
   
+    /* Media Result */  
     .media-result{  
-      margin-top:15px;  
+      margin-top:20px;  
       border:1px solid var(--line);  
-      border-radius:16px;  
+      border-radius:18px;  
       overflow:hidden;  
-      background:rgba(0,0,0,.48);  
-      animation:rise .45s var(--ease) both;  
+      background:rgba(0,0,0,.5);  
+      animation:rise .4s var(--ease) both;  
     }  
     .media-head{  
       display:flex;align-items:center;justify-content:space-between;  
-      gap:12px;padding:11px 13px;border-bottom:1px solid var(--line);  
+      gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);  
+      background: rgba(255,255,255,0.02);
     }  
     .media-head .label{  
       display:flex;align-items:center;gap:8px;  
-      color:var(--muted);font-size:.68rem;font-family:ui-monospace,monospace;  
+      color:var(--muted);font-size:.7rem;font-family:ui-monospace,monospace;font-weight: 600;
     }  
-    .media-head .label i{width:14px}  
-    .media-actions{display:flex;gap:6px}  
+    .media-head .label i{width:16px}  
+    
     .small-btn{  
-      display:flex;align-items:center;gap:6px;  
-      padding:7px 9px;border:1px solid var(--line);  
-      border-radius:99px;color:var(--muted);background:rgba(255,255,255,.025);  
-      font-size:.68rem;font-weight:800;  
+      display:flex;align-items:center;justify-content:center;gap:6px;  
+      padding:8px 12px;border:1px solid var(--line);  
+      border-radius:99px;color:var(--muted);background:rgba(255,255,255,.04);  
+      font-size:.7rem;font-weight:700; transition: 0.2s ease;
     }  
-    .small-btn:hover{color:#fff;border-color:var(--line-strong)}  
-    .small-btn i{width:13px}  
+    .small-btn:hover{color:#fff;border-color:var(--line-strong); background: rgba(255,255,255,0.08);}  
+    .small-btn i{width:14px}  
   
     .media-grid{  
-      display:grid;  
-      grid-template-columns:minmax(0,1.15fr) minmax(250px,.85fr);  
-    }  
+      display:flex;
+      flex-direction: column;
+    }
+    @media(min-width: 768px) {
+      .media-grid {
+        flex-direction: row;
+      }
+    }
+    
     .preview{  
-      min-width:0;  
+      flex: 1 1 50%;
       background:#000;  
       position:relative;  
-      aspect-ratio:16/9;  
       display:flex;align-items:center;justify-content:center;  
       overflow:hidden;  
+      min-height: 200px;
     }  
-    .preview video,.preview img{  
+    .preview video, .preview img{  
       width:100%;height:100%;display:block;  
-      object-fit:contain;background:#000;  
+      object-fit:contain;
+      max-height: 400px;
     }  
-    .preview img{object-fit:cover}  
     .preview-empty{  
-      color:var(--muted);font-size:.75rem;  
-      display:flex;flex-direction:column;align-items:center;gap:8px;  
+      color:var(--muted);font-size:.8rem;  
+      display:flex;flex-direction:column;align-items:center;gap:10px;  
     }  
-    .preview-empty i{width:25px;height:25px}  
+    .preview-empty i{width:28px;height:28px;opacity: 0.5;}  
   
-    .media-details{padding:17px;border-left:1px solid var(--line)}  
+    .media-details{
+      flex: 1 1 50%;
+      padding:20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    @media(min-width: 768px) {
+      .media-details {
+         border-left:1px solid var(--line);
+      }
+    }
+    
     .media-details h3{  
-      font-size:1rem;line-height:1.35;letter-spacing:-.2px;  
-      margin-bottom:10px;  
+      font-size:1.05rem;line-height:1.4;letter-spacing:-.2px;  
+      margin-bottom:12px;  
     }  
-    .meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:15px}  
+    .meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}  
     .chip{  
-      padding:5px 8px;border:1px solid var(--line);  
-      border-radius:8px;color:var(--muted);background:rgba(255,255,255,.025);  
-      font-size:.63rem;  
+      padding:6px 10px;border:1px solid var(--line);  
+      border-radius:8px;color:var(--muted);background:rgba(255,255,255,.04);  
+      font-size:.68rem; font-weight: 600; 
     }  
     .download-main{  
-      width:100%;min-height:43px;  
+      width:100%;min-height:48px;  
       display:flex;align-items:center;justify-content:center;gap:8px;  
-      border:1px solid #fff;border-radius:11px;  
+      border:1px solid #fff;border-radius:12px;  
       background:#fff;color:#000;  
-      font-size:.76rem;font-weight:900;  
-      margin-bottom:7px;  
+      font-size:.82rem;font-weight:800;  
+      margin-bottom:10px;  
     }  
-    .download-main:hover{opacity:.9}  
-    .secondary-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}  
-    .secondary-actions .small-btn{justify-content:center}  
+    .download-main:hover{background:#f0f0f0; transform: translateY(-1px);}  
+    .secondary-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}  
   
     .pinterest-grid{  
-      padding:14px;  
-      columns:4 180px;  
+      padding:16px;  
+      columns:2 150px;  
       column-gap:12px;  
-    }  
+    }
+    @media(min-width: 600px) {
+      .pinterest-grid { columns:3 180px; }
+    }
+    @media(min-width: 900px) {
+      .pinterest-grid { columns:4 200px; }
+    }
+    
     .pin-card{  
       break-inside:avoid;  
-      margin-bottom:12px;  
+      margin-bottom:14px;  
       border:1px solid var(--line);  
-      border-radius:13px;  
+      border-radius:14px;  
       overflow:hidden;  
-      background:rgba(255,255,255,.025);  
+      background:rgba(255,255,255,.03);  
       transition:.3s var(--ease);  
     }  
-    .pin-card:hover{transform:translateY(-3px);border-color:var(--line-strong)}  
+    .pin-card:hover{transform:translateY(-4px);border-color:var(--line-strong); box-shadow: 0 10px 20px rgba(0,0,0,0.3);}  
     .pin-image{display:block;width:100%;height:auto;background:#111}  
-    .pin-body{padding:9px}  
+    .pin-body{padding:12px}  
     .pin-title{  
       display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;  
-      overflow:hidden;font-size:.7rem;line-height:1.4;margin-bottom:8px;  
+      overflow:hidden;font-size:.75rem;line-height:1.4;margin-bottom:10px; color: #ddd; 
     }  
-    .pin-buttons{display:grid;grid-template-columns:1fr 1fr;gap:5px}  
+    .pin-buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px}  
     .pin-buttons a,.pin-buttons button{  
-      min-width:0;display:flex;align-items:center;justify-content:center;gap:5px;  
-      padding:7px 5px;border:1px solid var(--line);border-radius:8px;  
-      background:rgba(255,255,255,.025);color:var(--muted);font-size:.62rem;font-weight:800;  
+      min-width:0;display:flex;align-items:center;justify-content:center;gap:6px;  
+      padding:8px 6px;border:1px solid var(--line);border-radius:10px;  
+      background:rgba(255,255,255,.05);color:var(--muted);font-size:.65rem;font-weight:700;  
     }  
-    .pin-buttons a:hover,.pin-buttons button:hover{color:#fff;border-color:var(--line-strong)}  
-    .pin-buttons i{width:12px}  
+    .pin-buttons a:hover,.pin-buttons button:hover{color:#fff;border-color:var(--line-strong); background:rgba(255,255,255,0.1)}  
   
     .json-box{  
-      margin-top:15px;  
-      border:1px solid var(--line);border-radius:15px;overflow:hidden;  
-      background:rgba(0,0,0,.5);  
+      margin-top:20px;  
+      border:1px solid var(--line);border-radius:16px;overflow:hidden;  
+      background:rgba(0,0,0,.6);  
     }  
     .json-head{  
       display:flex;align-items:center;justify-content:space-between;  
-      padding:9px 12px;border-bottom:1px solid var(--line);  
-      color:var(--muted);font:700 .65rem ui-monospace,monospace;  
+      padding:10px 16px;border-bottom:1px solid var(--line);  
+      color:var(--muted);font:700 .7rem ui-monospace,monospace;  
     }  
     pre{  
-      max-height:280px;overflow:auto;padding:13px;  
-      color:#aaa;font: .7rem/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;  
+      max-height:300px;overflow:auto;padding:16px;  
+      color:#aaa;font: .75rem/1.6 ui-monospace,monospace;  
       white-space:pre-wrap;word-break:break-word;  
     }  
   
     .footer{  
-      padding:30px 0 18px;text-align:center;color:var(--muted-2);  
-      font-size:.68rem;  
+      padding:20px 0;text-align:center;color:var(--muted-2);  
+      font-size:.7rem; margin-top: auto; 
     }  
   
     .hidden{display:none!important}  
   
     @keyframes spin{to{transform:rotate(360deg)}}  
-    @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}  
+    @keyframes rise{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}  
   
-    @media(max-width:800px){  
+    /* Mobile Adjustments */
+    @media(max-width:768px){  
       .app{padding:12px}  
-      .navbar{top:8px}  
+      .navbar{top:10px; margin-bottom: 15px;}  
       .hamburger{display:block}  
       .nav-menu{  
-        position:absolute;left:0;right:0;top:calc(100% + 7px);  
+        position:absolute;left:0;right:0;top:calc(100% + 10px);  
         display:none;flex-direction:column;align-items:stretch;  
-        padding:7px;border:1px solid var(--line);border-radius:15px;  
-        background:#0c0c0d;box-shadow:0 22px 50px rgba(0,0,0,.7);  
+        padding:8px;border:1px solid var(--line);border-radius:16px;  
+        background:#0c0c0d;box-shadow:0 24px 60px rgba(0,0,0,.8);  
       }  
       .nav-menu.open{display:flex}  
-      .nav-btn{justify-content:flex-start}  
-      .banner-content{padding:22px}  
-      .banner-badge{width:65px;height:65px;border-radius:17px}  
-      .media-grid{grid-template-columns:1fr}  
-      .media-details{border-left:0;border-top:1px solid var(--line)}  
-    }  
-  
-    @media(max-width:560px){  
-      .hero{padding:25px 5px 18px}  
-      .hero h1{letter-spacing:-1.8px}  
-      .hero p{font-size:.82rem}  
-      .banner{min-height:135px}  
-      .banner-content{min-height:135px;padding:18px}  
+      .nav-btn{justify-content:flex-start; padding: 12px 16px;}  
+      
+      .hero{padding: 25px 0 20px;}
+      .hero h1{letter-spacing:-1px}  
+      .hero p{font-size:.85rem; padding: 0 10px;}  
+      
+      .banner-content{flex-direction: column; text-align: center; padding: 20px;}  
       .banner-badge{display:none}  
-      .body{padding:13px}  
-      .form{grid-template-columns:1fr}  
+      
+      .body{padding:16px}  
+      
       .submit{width:100%}  
-      .endpoint-info{align-items:flex-start}  
       .endpoint-pill{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}  
-      .pinterest-grid{columns:2 130px;padding:9px;column-gap:8px}  
-      .pin-card{margin-bottom:8px}  
-      .pin-body{padding:7px}  
-      .media-head{align-items:flex-start}  
-      .media-actions{flex-wrap:wrap;justify-content:flex-end}  
+      
+      .media-details{border-top:1px solid var(--line); padding: 16px;}  
     }  
-  </style>  </head>  <body>  
+  </style>  
+</head>  
+<body>  
   <canvas id="bg-canvas"></canvas>  
-  <div class="noise"></div>    <div class="app">  
+  <div class="noise"></div>    
+  
+  <div class="app">  
     <header class="navbar">  
       <a class="brand" href="#" aria-label="Theresia API">  
         <span class="brand-mark"></span>  
@@ -505,130 +528,130 @@
           <strong>THERESIA API</strong>  
           <small>K-FRAME MULTI-TOOLS</small>  
         </span>  
-      </a>  <button class="hamburger" id="hamburger" aria-label="Buka menu">  
-    <i data-lucide="menu"></i>  
-  </button>  
+      </a>  
+      <button class="hamburger" id="hamburger" aria-label="Buka menu">  
+        <i data-lucide="menu"></i>  
+      </button>  
 
-  <nav class="nav-menu" id="nav-menu">  
-    <button class="nav-btn active" data-category="download">  
-      <i data-lucide="download"></i> Downloader  
-    </button>  
-    <button class="nav-btn" data-category="search">  
-      <i data-lucide="search"></i> Search Engine  
-    </button>  
-  </nav>  
-</header>  
-
-<main>  
-  <section class="hero">  
-    <div class="eyebrow"><i data-lucide="sparkles"></i> API MULTI-TOOLS</div>  
-    <h1>FAST TOOLS.<br><span class="stroke">CLEAN OUTPUT.</span></h1>  
-    <p>  
-      Interface Theresia API untuk downloader dan search engine.  
-      Masukkan URL atau kata kunci, lalu biarkan endpoint memprosesnya.  
-    </p>  
-
-    <!-- Video Banner 16:9 Tanpa Kontrol UI (Autoplay Silent) -->
-    <div class="hero-thumb-wrapper">
-      <video id="hero-custom-video" autoplay muted loop playsinline></video>
-    </div>
-  </section>  
-
-  <section class="banner" aria-label="Banner">  
-    <div class="banner-content">  
-      <div class="banner-copy">  
-        <span>Theresia API • Advertisement Space</span>  
-        <h2>YOUR BANNER GOES HERE.</h2>  
-        <p>  
-          Area banner responsif untuk iklan, promo, partner, announcement,  
-          atau informasi API. Tidak mengganggu form utama.  
-        </p>  
-      </div>  
-      <div class="banner-badge"><i data-lucide="megaphone"></i></div>  
-    </div>  
-  </section>  
-
-  <section class="tool-card">  
-    <div class="sub-tabs-wrap">  
-      <div class="sub-tabs" id="sub-tabs"></div>  
-    </div>  
-
-    <div class="body">  
-      <div class="endpoint-info">  
-        <div class="endpoint-pill">  
-          <span class="method">GET</span>  
-          <span id="endpoint-label">/api/download/tiktok?url=...</span>  
-        </div>  
-        <span class="status-dot" id="status-dot" title="Status"></span>  
-      </div>  
-
-      <form class="form" id="tool-form">  
-        <div class="input-wrap">  
-          <i id="input-icon" data-lucide="link"></i>  
-          <input  
-            class="input"  
-            id="user-input"  
-            type="text"  
-            autocomplete="off"  
-            required  
-            placeholder="Masukkan URL video TikTok..."  
-          />  
-        </div>  
-        <button class="submit" id="submit-btn" type="submit">  
-          <span id="submit-text">Execute Endpoint</span>  
-          <i data-lucide="arrow-right"></i>  
+      <nav class="nav-menu" id="nav-menu">  
+        <button class="nav-btn active" data-category="download">  
+          <i data-lucide="download"></i> Downloader  
         </button>  
-      </form>  
+        <button class="nav-btn" data-category="search">  
+          <i data-lucide="search"></i> Search Engine  
+        </button>  
+      </nav>  
+    </header>  
 
-      <div class="hint" id="input-hint">  
-        <i data-lucide="info"></i>  
-        <span>Gunakan URL publik yang dapat diakses provider.</span>  
-      </div>  
+    <main>  
+      <section class="hero">  
+        <div class="eyebrow"><i data-lucide="sparkles"></i> API MULTI-TOOLS</div>  
+        <h1>FAST TOOLS.<br><span class="stroke">CLEAN OUTPUT.</span></h1>  
+        <p>  
+          Interface Theresia API untuk downloader dan search engine.  
+          Masukkan URL atau kata kunci, lalu biarkan endpoint memprosesnya.  
+        </p>  
 
-      <div class="loader hidden" id="loader">  
-        <span class="spinner"></span>  
-        <span id="loader-text">Memproses endpoint...</span>  
-      </div>  
+        <!-- Video Banner 16:9 -->
+        <div class="hero-thumb-wrapper">
+          <video id="hero-custom-video" autoplay muted loop playsinline></video>
+        </div>
+      </section>  
 
-      <div class="error hidden" id="error-box"></div>  
-
-      <section class="media-result hidden" id="media-result">  
-        <div class="media-head">  
-          <div class="label">  
-            <i data-lucide="play-square"></i>  
-            <span id="result-type">MEDIA RESULT</span>  
+      <section class="banner" aria-label="Banner">  
+        <div class="banner-content">  
+          <div class="banner-copy">  
+            <span>Theresia API • Advertisement Space</span>  
+            <h2>YOUR BANNER GOES HERE.</h2>  
+            <p>  
+              Area banner responsif untuk iklan, promo, partner, announcement,  
+              atau informasi API. Tidak mengganggu form utama.  
+            </p>  
           </div>  
-          <div class="media-actions">  
-            <button class="small-btn" id="copy-result" type="button">  
-              <i data-lucide="copy"></i> Copy JSON  
+          <div class="banner-badge"><i data-lucide="megaphone"></i></div>  
+        </div>  
+      </section>  
+
+      <section class="tool-card">  
+        <div class="sub-tabs-wrap">  
+          <div class="sub-tabs" id="sub-tabs"></div>  
+        </div>  
+
+        <div class="body">  
+          <div class="endpoint-info">  
+            <div class="endpoint-pill">  
+              <span class="method">GET</span>  
+              <span id="endpoint-label">/api/download/tiktok?url=...</span>  
+            </div>  
+            <span class="status-dot" id="status-dot" title="Status"></span>  
+          </div>  
+
+          <form class="form" id="tool-form">  
+            <div class="input-wrap">  
+              <i id="input-icon" data-lucide="link"></i>  
+              <input  
+                class="input"  
+                id="user-input"  
+                type="text"  
+                autocomplete="off"  
+                required  
+                placeholder="Masukkan URL video TikTok..."  
+              />  
+            </div>  
+            <button class="submit" id="submit-btn" type="submit">  
+              <span id="submit-text">Execute Endpoint</span>  
+              <i data-lucide="arrow-right"></i>  
             </button>  
+          </form>  
+
+          <div class="hint" id="input-hint">  
+            <i data-lucide="info"></i>  
+            <span>Gunakan URL publik yang dapat diakses provider.</span>  
           </div>  
+
+          <div class="loader hidden" id="loader">  
+            <span class="spinner"></span>  
+            <span id="loader-text">Memproses endpoint...</span>  
+          </div>  
+
+          <div class="error hidden" id="error-box"></div>  
+
+          <section class="media-result hidden" id="media-result">  
+            <div class="media-head">  
+              <div class="label">  
+                <i data-lucide="play-square"></i>  
+                <span id="result-type">MEDIA RESULT</span>  
+              </div>  
+              <button class="small-btn" id="copy-result" type="button">  
+                <i data-lucide="copy"></i> Copy JSON  
+              </button>  
+            </div>  
+            <div id="media-content"></div>  
+          </section>  
+
+          <section class="json-box hidden" id="json-box">  
+            <div class="json-head">  
+              <span>RAW API RESPONSE</span>  
+              <button class="small-btn" id="toggle-json" type="button">  
+                <i data-lucide="code-2"></i> JSON  
+              </button>  
+            </div>  
+            <pre id="json-output"></pre>  
+          </section>  
         </div>  
-        <div id="media-content"></div>  
       </section>  
+    </main>  
 
-      <section class="json-box hidden" id="json-box">  
-        <div class="json-head">  
-          <span>RAW API RESPONSE</span>  
-          <button class="small-btn" id="toggle-json" type="button">  
-            <i data-lucide="code-2"></i> JSON  
-          </button>  
-        </div>  
-        <pre id="json-output"></pre>  
-      </section>  
-    </div>  
-  </section>  
-</main>  
+    <footer class="footer">  
+      © 2026 Theresia API · K-Frame Design System
+    </footer>
+  </div>    
 
-<footer class="footer">  
-  © 2026 Theresia API · K-Frame Design System · Built for responsive web.  
-</footer>
-
-  </div>    <script>  
+  <script>  
     document.addEventListener("DOMContentLoaded", () => {  
       lucide.createIcons();  
 
-      /* Video URL Banner */
+      /* Config Hero Video */
       const CUSTOM_HERO_VIDEO = "https://files.catbox.moe/blti0s.mp4";  
       const CUSTOM_HERO_POSTER = ""; 
 
@@ -636,10 +659,16 @@
       if (heroVideo && CUSTOM_HERO_VIDEO) {
         heroVideo.src = CUSTOM_HERO_VIDEO;
         if (CUSTOM_HERO_POSTER) heroVideo.poster = CUSTOM_HERO_POSTER;
-        heroVideo.play().catch(() => {});
+        // Handle autoplay policy browser
+        const playPromise = heroVideo.play();
+        if (playPromise !== undefined) {
+           playPromise.catch(error => {
+             console.log("Auto-play prevented", error);
+           });
+        }
       }
 
-      /* Path endpoint disesuaikan dengan folder Vercel */  
+      /* Endpoints Config */  
       const config = {  
         download: [  
           {  
@@ -894,7 +923,7 @@
         details.className = "media-details";  
   
         const chips = [];  
-        if (d.status) chips.push(d.status);  
+        if (d.status && typeof d.status === 'string') chips.push(d.status);  
         if (d.provider) chips.push(d.provider);  
         if (d.author?.nickname) chips.push(d.author.nickname);  
   
@@ -921,24 +950,34 @@
         mediaContent.replaceChildren(wrapper);  
         mediaResult.classList.remove("hidden");  
   
-        $("main-download").addEventListener("click", () => {  
+        $("main-download").addEventListener("click", async () => {  
           if (!videoUrl) return;  
-          const a = document.createElement("a");  
-          a.href = videoUrl;  
-          a.download = `${activeTool.id}_${Date.now()}.mp4`;  
-          a.target = "_blank";  
-          a.rel = "noopener";  
-          document.body.appendChild(a);  
-          a.click();  
-          a.remove();  
+          try {
+            const res = await fetch(videoUrl);
+            const blob = await res.blob();
+            const blobUrl = URL.createObjectURL(blob);
+            
+            const a = document.createElement("a");  
+            a.href = blobUrl;  
+            a.download = `${activeTool.id}_${Date.now()}.mp4`;  
+            document.body.appendChild(a);  
+            a.click();  
+            a.remove();  
+            URL.revokeObjectURL(blobUrl);
+          } catch {
+            window.open(videoUrl, "_blank", "noopener");
+          }
         });  
   
         $("copy-video").addEventListener("click", async () => {  
           if (!videoUrl) return;  
           await navigator.clipboard?.writeText(videoUrl);  
-          $("copy-video").innerHTML =  
-            `<i data-lucide="check"></i> Copied`;  
+          $("copy-video").innerHTML = `<i data-lucide="check"></i> Copied`;  
           lucide.createIcons();  
+          setTimeout(() => {
+            $("copy-video").innerHTML = `<i data-lucide="copy"></i> Copy URL`;
+            lucide.createIcons();
+          }, 1500);
         });  
   
         $("open-video").addEventListener("click", () => {  
@@ -960,7 +999,7 @@
   
         if (!results.length) {  
           mediaContent.innerHTML = `  
-            <div class="preview" style="aspect-ratio:auto;min-height:170px">  
+            <div class="preview" style="min-height:200px">  
               <div class="preview-empty">  
                 <i data-lucide="image-off"></i>  
                 <span>Tidak ada gambar ditemukan.</span>  
@@ -991,7 +1030,7 @@
             <img class="pin-image"  
                  src="${escapeHtml(imageUrl)}"  
                  alt="${escapeHtml(item.title || "Pinterest image")}"  
-                 loading="${index < 4 ? "eager" : "lazy"}"  
+                 loading="${index < 6 ? "eager" : "lazy"}"  
                  referrerpolicy="no-referrer">  
             <div class="pin-body">  
               <div class="pin-title">${escapeHtml(item.title || "Pinterest Image")}</div>  
@@ -1000,7 +1039,7 @@
                    download="pinterest_${Date.now()}_${index + 1}.jpg"  
                    target="_blank"  
                    rel="noopener">  
-                  <i data-lucide="download"></i> Download  
+                  <i data-lucide="download"></i> Save  
                 </a>  
                 ${pinUrl  
                   ? `<a href="${escapeHtml(pinUrl)}" target="_blank" rel="noopener">  
@@ -1089,7 +1128,7 @@
   
           mediaResult.scrollIntoView({  
             behavior: "smooth",  
-            block: "nearest"  
+            block: "start"  
           });  
   
         } catch (error) {  
@@ -1163,7 +1202,7 @@
         }  
       });  
   
-      /* Canvas background animation */  
+      /* Canvas Background Animation */  
       const canvas = $("bg-canvas");  
       const ctx = canvas.getContext("2d");  
       let width = 0;  
@@ -1184,10 +1223,10 @@
       function drawGrid(time) {  
         ctx.clearRect(0, 0, width, height);  
   
-        const gap = 42;  
-        const drift = (time * 0.006) % gap;  
+        const gap = 45;  
+        const drift = (time * 0.005) % gap;  
   
-        ctx.strokeStyle = "rgba(255,255,255,.032)";  
+        ctx.strokeStyle = "rgba(255,255,255,.025)";  
         ctx.lineWidth = 1;  
   
         for (let x = -gap + drift; x < width + gap; x += gap) {  
@@ -1213,5 +1252,6 @@
   
       renderTabs();  
     });  
-  </script>  </body>  
+  </script>  
+</body>  
 </html>
